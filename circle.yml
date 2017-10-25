@@ -1,0 +1,21 @@
+machine:
+  environment:
+    XCODE_SCHEME: BalanceServer-Package
+  xcode:
+    version: "9.0"
+dependencies:
+  pre:
+    - brew update
+    - brew install mysql
+    - brew services start mysql
+  override:
+    - carthage version
+test:
+  override:
+    - xcodebuild -showsdks
+    - ./scripts/createDatabaseForTesting.sh 
+    - swift build
+    - .build/debug/BalanceServer:
+         background: true
+    - sleep 5
+    - swift test
