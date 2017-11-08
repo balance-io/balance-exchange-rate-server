@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "PerfectBCrypt",
+        "repositoryURL": "https://github.com/PerfectSideRepos/PerfectBCrypt.git",
+        "state": {
+          "branch": null,
+          "revision": "ef2f573eb841f6100df21f53042b226362430ca7",
+          "version": "3.0.0"
+        }
+      },
+      {
         "package": "PerfectCrypto",
         "repositoryURL": "https://github.com/PerfectlySoft/Perfect-Crypto.git",
         "state": {
