@@ -26,7 +26,6 @@ public struct ExchangeRatesHandlers {
                                 ["method": "get", "uri": "/exchangeRates/updateFiat", "handler": updateFiatHandler],
                                 ["method": "get", "uri": "/exchangeRates/rotateTables", "handler": rotateTablesHandler]]
     
-    public static var urlSession: URLSession?
     fileprivate static let cache = SimpleCache<String, [String: Any]>()
     fileprivate static let exchangeRatesKey = "exchangeRates"
     
@@ -40,8 +39,7 @@ public struct ExchangeRatesHandlers {
             }
             
             do {
-                let exchangeRates = ExchangeRates()
-                let dict = try exchangeRates.latestExchangeRates()
+                let dict = try ExchangeRates.latestExchangeRates()
                 cache.set(value: dict, forKey: exchangeRatesKey)
                 sendSuccessJsonResponse(dict: dict, response: response)
             } catch {
@@ -65,8 +63,7 @@ public struct ExchangeRatesHandlers {
             
             let from = Currency.rawValue(fromString)
             let to = Currency.rawValue(toString)
-            let exchangeRates = ExchangeRates()
-            let value = exchangeRates.convert(amount: amount, from: from, to: to, source: source)
+            let value = ExchangeRates.convert(amount: amount, from: from, to: to, source: source)
             
             guard let returnValue = value else {
                 sendErrorJsonResponse(error: .noData, response: response)
@@ -78,18 +75,16 @@ public struct ExchangeRatesHandlers {
     }
     
     // NOTE: Called once per minute by a cron job
-    public static func updateCryptoHandler(data: [String: Any]) throws -> RequestHandler {
-        let session = self.urlSession ?? URLSession(configuration: .default)
-        return ExchangeRatesHandlers.updateHandler(session: session, sources: ExchangeRateSource.allCrypto)
+    public static func updateCryptoHandler(data: [String: Any], session: URLSession = .shared) throws -> RequestHandler {
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: session)
     }
     
     // NOTE: Called once per day by a cron job
-    public static func updateFiatHandler(data: [String: Any]) throws -> RequestHandler {
-        let session = self.urlSession ?? URLSession(configuration: .default)
-        return ExchangeRatesHandlers.updateHandler(session: session, sources: ExchangeRateSource.allFiat)
+    public static func updateFiatHandler(data: [String: Any], session: URLSession = .shared) throws -> RequestHandler {
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: session)
     }
     
-    public static func updateHandler(session: URLSession, sources: [ExchangeRateSource]) -> RequestHandler {
+    public static func updateHandler(sources: [ExchangeRateSource], session: URLSession = .shared) -> RequestHandler {
         return { request, response in
             // Ensure this is a valid cron job request
             guard isValidCronRequest(request: request) else {
@@ -97,8 +92,7 @@ public struct ExchangeRatesHandlers {
                 response.completed()
                 return
             }
-            let exchangeRates = ExchangeRates()
-            exchangeRates.updateExchangeRates(session: session, sources: sources)
+            ExchangeRates.updateExchangeRates(sources: sources, session: session)
             
             // Clear the cache
             cache.remove(valueForKey: exchangeRatesKey)

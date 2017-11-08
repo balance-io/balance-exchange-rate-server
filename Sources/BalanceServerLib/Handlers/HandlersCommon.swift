@@ -36,9 +36,9 @@ public func sendErrorJsonResponse(error: BalanceError, response: HTTPResponse) {
     response.completed()
 }
 
-public func connectToMysql(db: String? = nil) -> MySQL? {
+public func connectToMysql(db: String? = "balance") -> MySQL? {
     let mysql = MySQL()
-    guard mysql.connect(host: Config.MySQL.host, user: Config.MySQL.user, password: Config.MySQL.pass, db: db ?? "balance", socket: Config.MySQL.socket) else {
+    guard mysql.connect(host: Config.MySQL.host, user: Config.MySQL.user, password: Config.MySQL.pass, db: db, socket: Config.MySQL.socket) else {
         Log.error(message: "Failure connecting to mysql server host \(String(describing: Config.MySQL.host)) socket: \(String(describing: Config.MySQL.socket)) error: \(mysql.errorCode()) \(mysql.errorMessage())")
         return nil
     }
@@ -52,12 +52,11 @@ public func isValidCronRequest(request: HTTPRequest) -> Bool {
     // Ensure proper header is included if we're not calling this from localhost
     #if os(OSX) || DEBUG
         return true
+    #else
+        guard request.header(.custom(name: "X-Appengine-Cron")) == "true" else {
+            Log.error(message: "Not a valid cron job. The request does not contain the X-Appengine-Cron header set to true, headers: \(request.headers)")
+            return false
+        }
+        return true
     #endif
-
-    guard request.header(.custom(name: "X-Appengine-Cron")) == "true" else {
-        Log.error(message: "Not a valid cron job. The request does not contain the X-Appengine-Cron header set to true, headers: \(request.headers)")
-        return false
-    }
-    
-    return true
 }

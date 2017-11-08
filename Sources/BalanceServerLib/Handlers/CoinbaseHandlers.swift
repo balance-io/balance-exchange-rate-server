@@ -25,7 +25,6 @@ public struct CoinbaseHandlers {
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
                 let code = params?["code"] as? String,
                 let postJsonData = preparePostData(code: code) else {
-                    // Using invalidInputData error as this can only fail if code is not convertable to JSON
                     Log.error(message: "requestTokenHandler: Invalid input data")
                     sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
                     return
@@ -51,7 +50,6 @@ public struct CoinbaseHandlers {
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
                   let refreshToken = params?["refreshToken"] as? String,
                   let postJsonData = preparePostData(refreshToken: refreshToken) else {
-                // Using invalidInputData error as this can only fail if code is not convertable to JSON
                 Log.error(message: "requestTokenHandler: Invalid input data")
                 sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
                 return
@@ -96,8 +94,7 @@ public struct CoinbaseHandlers {
     }
     
     // Gets the access token from the Coinbase API
-    static let session = URLSession(configuration: .default)
-    fileprivate static func getAccessToken(postData: Data, completion: @escaping ([String: Any?], BalanceError?) -> Void) {
+    fileprivate static func getAccessToken(postData: Data, session: URLSession = .shared, completion: @escaping ([String: Any?], BalanceError?) -> Void) {
         let url = URL(string: "https://api.coinbase.com/oauth/token")!
         var request = URLRequest(url: url)
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
