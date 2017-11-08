@@ -52,12 +52,12 @@ public struct ProfileTable {
         return results.numRows > 0
     }
     
-    public static func register(email: String, password: String) throws -> Profile? {
+    public static func register(email: String, password: String, mysql: MySQL? = connectToMysql()) throws -> Profile? {
         guard try !exists(email: email) else {
             throw BalanceError.invalidInputData
         }
         
-        guard let mysql = connectToMysql() else {
+        guard let mysql = mysql else {
             throw BalanceError.databaseError
         }
         
@@ -81,8 +81,8 @@ public struct ProfileTable {
         return try login(email: email, password: password)
     }
     
-    public static func login(email: String, password: String) throws -> Profile? {
-        guard let mysql = connectToMysql() else {
+    public static func login(email: String, password: String, mysql: MySQL? = connectToMysql()) throws -> Profile? {
+        guard let mysql = mysql else {
             throw BalanceError.databaseError
         }
         
@@ -124,8 +124,8 @@ public struct ProfileTable {
         }
     }
     
-    public static func createTable() -> Bool {
-        guard let mysql = connectToMysql() else {
+    public static func createTable(mysql: MySQL? = connectToMysql()) -> Bool {
+        guard let mysql = mysql else {
             return false
         }
         
@@ -143,8 +143,8 @@ public struct ProfileTable {
         return true
     }
     
-    public static func dropTable() -> Bool {
-        guard let mysql = connectToMysql() else {
+    public static func dropTable(mysql: MySQL? = connectToMysql()) -> Bool {
+        guard let mysql = mysql else {
             return false
         }
         
