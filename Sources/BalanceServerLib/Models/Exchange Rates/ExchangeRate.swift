@@ -30,14 +30,10 @@ public extension Array where Element == ExchangeRate {
     }
 }
 
-protocol ExchangeHandlers {
-    func latestExchangeRates() throws -> [String: Any]
-}
-
-class ExchangeRates: ExchangeHandlers {
+struct ExchangeRates {
     // MARK: Get
     
-    public func latestExchangeRates() throws -> [String: Any] {
+    public static func latestExchangeRates() throws -> [String: Any] {
         var dict = [String: Any]()
         for source in ExchangeRateSource.all {
             if let (timestamp, exchangeRates) = try latestExchangeRates(forSource: source) {
@@ -61,12 +57,12 @@ class ExchangeRates: ExchangeHandlers {
         return dict
     }
     
-    public func latestExchangeRates(forSource source: ExchangeRateSource) throws -> (Date, [ExchangeRate])? {
+    public static func latestExchangeRates(forSource source: ExchangeRateSource, mysql: MySQL? = connectToMysql()) throws -> (Date, [ExchangeRate])? {
         guard let timestamp = try latestTimestamp(forSource: source) else {
             return nil
         }
         
-        guard let mysql = connectToMysql() else {
+        guard let mysql = mysql else {
             throw BalanceError.databaseError
         }
         
@@ -112,8 +108,8 @@ class ExchangeRates: ExchangeHandlers {
         return (timestamp, exchangeRates)
     }
     
-    public func latestTimestamp(forSource source: ExchangeRateSource) throws -> Date? {
-        guard let mysql = connectToMysql() else {
+    public static func latestTimestamp(forSource source: ExchangeRateSource, mysql: MySQL? = connectToMysql()) throws -> Date? {
+        guard let mysql = mysql else {
             throw BalanceError.databaseError
         }
         
@@ -133,7 +129,7 @@ class ExchangeRates: ExchangeHandlers {
     
     // MARK: Convert
     
-    public func convert(amount: Double, from: Currency, to: Currency, source: ExchangeRateSource) -> Double? {
+    public static func convert(amount: Double, from: Currency, to: Currency, source: ExchangeRateSource) -> Double? {
         var rate: Double?
         
         if let newRate = directConvert(amount: amount, from: from, to: to, source: source) {
@@ -171,7 +167,7 @@ class ExchangeRates: ExchangeHandlers {
         return nil
     }
     
-    public func directConvert(amount: Double, from: Currency, to: Currency, source: ExchangeRateSource) -> Double? {
+    public static func directConvert(amount: Double, from: Currency, to: Currency, source: ExchangeRateSource) -> Double? {
         
         Log.debug(message: "converting from \(from) to \(to) source \(source)")
 
@@ -191,14 +187,13 @@ class ExchangeRates: ExchangeHandlers {
 
     // MARK: Update
     
-    public func updateExchangeRates(session:URLSession, sources: [ExchangeRateSource]) {
+    public static func updateExchangeRates(sources: [ExchangeRateSource], session: URLSession = .shared) {
         let startTime = Date()
         // Call each API and store the rates
         // TODO: Rewrite this to be concurrent
         for source in sources {
-            let exchangeRates = ExchangeRates()
             let promise = Promise<Bool> { p in
-                exchangeRates.updateRatesForExchange(session: session ,source: source, startTime: startTime) { balError in
+                ExchangeRates.updateRatesForExchange(source: source, startTime: startTime, session: session) { balError in
                     if let balError = balError {
                         print("Error updating exchange rates for \(source): \(balError)")
                     }
@@ -214,7 +209,7 @@ class ExchangeRates: ExchangeHandlers {
         }
     }
     
-    public func updateRatesForExchange(session: URLSession, source: ExchangeRateSource, startTime: Date, completion: @escaping (BalanceError?) -> Void) {
+    public static func updateRatesForExchange(source: ExchangeRateSource, startTime: Date, session: URLSession = .shared, completion: @escaping (BalanceError?) -> Void) {
         guard let parseFunction = ExchangeRateParsing.function(forSource: source) else {
             completion(.unknownError)
             return
@@ -241,8 +236,8 @@ class ExchangeRates: ExchangeHandlers {
         task.resume()
     }
     
-    public func insert(exchangeRates: [ExchangeRate], startTime: Date, tableName: String = ExchangeRateTable.current) -> BalanceError? {
-        guard let mysql = connectToMysql() else {
+    public static func insert(exchangeRates: [ExchangeRate], startTime: Date, tableName: String = ExchangeRateTable.current, mysql: MySQL? = connectToMysql()) -> BalanceError? {
+        guard let mysql = mysql else {
             return .databaseError
         }
         

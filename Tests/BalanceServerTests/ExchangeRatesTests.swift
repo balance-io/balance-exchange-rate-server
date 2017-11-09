@@ -12,14 +12,11 @@ import XCTest
 class ExchangeRatesTests: XCTestCase {
     
     var mockSession: MockSession!
-    var exchange: ExchangeRatesHandlers!
     
     override func setUp() {
         super.setUp()
         mockSession = MockSession()
-        ExchangeRatesHandlers.urlSession = mockSession
-        exchange = ExchangeRatesHandlers()
-        
+
         ExchangeRateTable.rotate()
         loadExhangeInfo()
     }
@@ -28,16 +25,14 @@ class ExchangeRatesTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
         mockSession = nil
-        exchange = nil
     }
     
     func testConvert() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.allCrypto)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
         //then
-        XCTAssertNotNil(try exchangeRate.latestExchangeRates())
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates())
     }
     
     //this only work if we can flush the database (test execution order is not guaranteed)
@@ -61,91 +56,83 @@ class ExchangeRatesTests: XCTestCase {
     
     func testConvertFiat() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.allFiat)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allFiat, session: mockSession)
         
         //then
-        XCTAssertNotNil(try exchangeRate.latestExchangeRates(forSource: .fixer))
-        let exchange = exchangeRate.convert(amount: 10.0, from: .usd, to: .eur, source: ExchangeRateSource.fixer)
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .fixer))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .usd, to: .eur, source: ExchangeRateSource.fixer)
         XCTAssertEqual(exchange?.integerFixedFiatDecimals(), 849)
     }
     
     func testConvertCryptoPoloniex() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.allCrypto)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
         //then
-        XCTAssertNotNil(try exchangeRate.latestExchangeRates(forSource: .poloniex))
-        let exchange = exchangeRate.convert(amount: 10.0, from: .btc, to: .eth, source: ExchangeRateSource.poloniex)
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .poloniex))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .btc, to: .eth, source: ExchangeRateSource.poloniex)
 //        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), ((1/0.07003471)*10.0).integerFixedCryptoDecimals())
         XCTAssertNotNil(exchange)
     }
     
     func testConvertCryptoBitfinex() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.allCrypto)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
         //then
-        XCTAssertNotNil(try exchangeRate.latestExchangeRates(forSource: .bitfinex))
-        let exchange = exchangeRate.convert(amount: 10.0, from: .eth, to: .usd, source: ExchangeRateSource.bitfinex)
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .bitfinex))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .eth, to: .usd, source: ExchangeRateSource.bitfinex)
 //        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (293.5*10.0).integerFixedCryptoDecimals())
         XCTAssertNotNil(exchange)
     }
     
     func testConvertCryptoCoinbase() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.allCrypto)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
         //then
-        XCTAssertNotNil(try exchangeRate.latestExchangeRates(forSource: .coinbaseGdax))
-        let exchange = exchangeRate.convert(amount: 10.0, from: .ltc, to: .usd, source: ExchangeRateSource.coinbaseGdax)
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .coinbaseGdax))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .ltc, to: .usd, source: ExchangeRateSource.coinbaseGdax)
         XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (53.04*10.0).integerFixedCryptoDecimals())
     }
     
     func testConvertCryptoKraken() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.allCrypto)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
         //then
-        XCTAssertNotNil(try exchangeRate.latestExchangeRates(forSource: .kraken))
-        let exchange = exchangeRate.convert(amount: 10.0, from: Currency.rawValue("BCH"), to: .usd, source: ExchangeRateSource.kraken)
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .kraken))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: Currency.rawValue("BCH"), to: .usd, source: ExchangeRateSource.kraken)
 //        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (441.7*10.0).integerFixedCryptoDecimals())
         XCTAssertNotNil(exchange)
     }
     
     func testConvertCryptoDoubleTransformCryptoToOtherFiat() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.all)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
 
         //then
-        let exchange = exchangeRate.convert(amount: 10.0, from: Currency.rawValue("BCH"), to: .eur, source: .bitfinex)
+        let exchange = ExchangeRates.convert(amount: 10.0, from: Currency.rawValue("BCH"), to: .eur, source: .bitfinex)
 //        XCTAssertEqual(exchange?.integerFixedFiatDecimals(), ((443.99*10.0)*0.849).integerFixedFiatDecimals())
         XCTAssertNotNil(exchange)
     }
     
     func testConvertCryptoLTCtoUSDinPoloniex() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.all)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
         
         //then
-        let exchange = exchangeRate.convert(amount: 10.0, from: .ltc, to: .usd, source: .poloniex)
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .ltc, to: .usd, source: .poloniex)
 //        XCTAssertEqual(exchange?.integerFixedFiatDecimals(), (53.0*10.0).integerFixedFiatDecimals())
         XCTAssertNotNil(exchange)
     }
     
     func testConvertCryptoUSDTtoUSDinKraken() {
         //when
-        let exchangeRate = ExchangeRates()
-        _ = exchangeRate.updateExchangeRates(session: mockSession, sources: ExchangeRateSource.all)
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
         
         //then
-        let exchange = exchangeRate.convert(amount: 10.0, from: Currency.rawValue("USDT"), to: .usd, source: .kraken)
+        let exchange = ExchangeRates.convert(amount: 10.0, from: Currency.rawValue("USDT"), to: .usd, source: .kraken)
 //        XCTAssertEqual(exchange?.integerFixedFiatDecimals(), (53.0*10.0).integerFixedFiatDecimals())
         XCTAssertNotNil(exchange)
     }

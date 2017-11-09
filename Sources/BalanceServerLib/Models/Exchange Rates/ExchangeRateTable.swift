@@ -19,12 +19,12 @@ public struct ExchangeRateTable {
         return name(forDate: date)
     }
     
-    // Weekly tables formatted like ExchangeRates_Weekly_YYYY_WW i.e. ExchangeRates_Weekly_2017_38
+    // Weekly tables formatted like exchangeRates_weekly_YYYY_WW i.e. exchangeRates_weekly_2017_38
     public static func name(forDate date: Date) -> String {
         let calendar = Calendar(identifier: .gregorian)
         let year = calendar.component(.year, from: date)
         let weekOfYear = calendar.component(.weekOfYear, from: date)
-        let name = String(format:"ExchangeRates_Weekly_%d_%02d", year, weekOfYear)
+        let name = String(format:"exchangeRates_weekly_%d_%02d", year, weekOfYear)
         return name
     }
     
@@ -36,8 +36,8 @@ public struct ExchangeRateTable {
         }
     }
     
-    public static func create(name: String) -> Bool {
-        guard let mysql = connectToMysql() else {
+    public static func create(name: String, mysql: MySQL? = connectToMysql()) -> Bool {
+        guard let mysql = mysql else {
             return false
         }
         
