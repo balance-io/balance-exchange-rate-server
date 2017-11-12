@@ -11,10 +11,11 @@ import PerfectLib
 public struct ExchangeRateParsing {
     public typealias ParseFunction = (Data) -> ([ExchangeRate], BalanceError?)
     public static let parseFunctions: [ExchangeRateSource: ParseFunction] = [.coinbaseGdax: coinbaseGdax,
-                                                                             .poloniex: poloniex,
-                                                                             .bitfinex: bitfinex,
-                                                                             .kraken: kraken,
-                                                                             .fixer: fixer]
+                                                                             .poloniex:     poloniex,
+                                                                             .bitfinex:     bitfinex,
+                                                                             .kraken:       kraken,
+                                                                             .kucoin:       kucoin,
+                                                                             .fixer:        fixer]
     
     public static func function(forSource source: ExchangeRateSource) -> ParseFunction? {
         return parseFunctions[source]
@@ -167,6 +168,36 @@ public struct ExchangeRateParsing {
             }
             
             let exchangeRate = ExchangeRate(source: .kraken, from: fromCurrency, to: toCurrency, rate: rate)
+            exchangeRates.append(exchangeRate)
+        }
+        
+        return (exchangeRates, nil)
+    }
+    
+    public static func kucoin(responseData: Data) -> ([ExchangeRate], BalanceError?) {
+        let responseString = String(data: responseData, encoding: .utf8)
+        
+        // Verify the response is correct
+        guard let bodyOptional = try? responseString?.jsonDecode() as? [String: Any], let body = bodyOptional, let data = body["data"] as? [[String: Any]] else {
+            return ([], .jsonDecoding)
+        }
+        
+        // Check for success
+        guard let success = body["success"] as? Bool, success == true else {
+            Log.error(message: "Success was false")
+            return ([], .jsonDecoding)
+        }
+        
+        // Parse the exchange rates
+        var exchangeRates = [ExchangeRate]()
+        for rateDict in data {
+            guard let coinType = rateDict["coinType"] as? String, let coinTypePair = rateDict["coinTypePair"] as? String, let lastDealPrice = rateDict["lastDealPrice"] as? Double else {
+                return ([], .jsonDecoding)
+            }
+            
+            let from = Currency.rawValue(coinType)
+            let to = Currency.rawValue(coinTypePair)
+            let exchangeRate = ExchangeRate(source: .kucoin, from: from, to: to, rate: lastDealPrice)
             exchangeRates.append(exchangeRate)
         }
         
