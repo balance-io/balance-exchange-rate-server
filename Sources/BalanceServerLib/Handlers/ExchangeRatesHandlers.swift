@@ -20,10 +20,10 @@ import PerfectMySQL
 public struct ExchangeRatesHandlers {
     public static let routes = [["method": "get", "uri": "/exchangeRates", "handler": exchangeRatesHandler],
                                 ["method": "get", "uri": "/exchangeRates/convert", "handler": convertHandler],
-                                
+
                                 // Cron jobs
-                                ["method": "get", "uri": "/exchangeRates/updateCrypto", "handler": updateCryptoHandler],
-                                ["method": "get", "uri": "/exchangeRates/updateFiat", "handler": updateFiatHandler],
+                                ["method": "get", "uri": "/exchangeRates/updateCrypto", "handler": updateAllCryptoHandler],
+                                ["method": "get", "uri": "/exchangeRates/updateFiat", "handler": updateAllFiatHandler],
                                 ["method": "get", "uri": "/exchangeRates/rotateTables", "handler": rotateTablesHandler]]
     
     fileprivate static let cache = SimpleCache<String, [String: Any]>()
@@ -75,13 +75,13 @@ public struct ExchangeRatesHandlers {
     }
     
     // NOTE: Called once per minute by a cron job
-    public static func updateCryptoHandler(data: [String: Any], session: URLSession = .shared) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: session)
+    public static func updateAllCryptoHandler(data: [String: Any]) throws -> RequestHandler {
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: .shared)
     }
     
     // NOTE: Called once per day by a cron job
-    public static func updateFiatHandler(data: [String: Any], session: URLSession = .shared) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: session)
+    public static func updateAllFiatHandler(data: [String: Any]) throws -> RequestHandler {
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: .shared)
     }
     
     public static func updateHandler(sources: [ExchangeRateSource], session: URLSession = .shared) -> RequestHandler {
