@@ -34,7 +34,7 @@ extension Double {
         let balanceString = String(format:"%f", self * Double(pow(10.0, Double(decimals))))
         let integerPart = balanceString.components(separatedBy: ".")[0]
         let availableDecimal = NumberUtils.decimalFormatter.number(from: integerPart)?.decimalValue
-        return (availableDecimal! as NSDecimalNumber).intValue
+        return NSDecimalNumber(decimal: availableDecimal!).intValue
     }
     
     func cientificToEightDecimals(decimals: Int) -> Double {
