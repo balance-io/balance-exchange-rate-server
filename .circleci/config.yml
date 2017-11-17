@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run: apt-get update && apt-get install -y apt-utils && apt-get install -y libmysqlclient-dev libssl-dev uuid-dev
-      - run: ./../scripts/createDatabaseForTesting.sh 
+      - run: ./scripts/createDatabaseForTesting.sh 
       - run: swift build
       - run: .build/debug/BalanceServer
       - run: swift test
