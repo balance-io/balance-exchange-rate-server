@@ -7,7 +7,7 @@
 
 import Foundation
 import PerfectLib
-import MySQL
+import PerfectMySQL
 
 public struct ExchangeRateTable {
     public static var current: String {

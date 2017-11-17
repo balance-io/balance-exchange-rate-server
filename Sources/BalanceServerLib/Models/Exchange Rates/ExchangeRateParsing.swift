@@ -85,7 +85,7 @@ public struct ExchangeRateParsing {
         // Parse the exchange rates
         var exchangeRates = [ExchangeRate]()
         for array in body {
-            guard array.count == 11, let symbol = array[0] as? String, symbol.characters.count == 7 else {
+            guard array.count == 11, let symbol = array[0] as? String, symbol.count == 7 else {
                 return ([], .jsonDecoding)
             }
             
@@ -149,7 +149,7 @@ public struct ExchangeRateParsing {
                 toCurrency = Currency.rawValue("XBT")
             default:
                 // Usually every currency is 4 characters, optionally pre-padded with X if it's crypto or Z if it's fiat
-                if key.length == 8 {
+                if key.count == 8 {
                     var fromCode = key.substring(to: 4)
                     if fromCode.hasPrefix("X") || fromCode.hasPrefix("Z") {
                         fromCode = fromCode.substring(from: 1)

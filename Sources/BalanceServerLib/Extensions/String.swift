@@ -19,7 +19,7 @@ import Foundation
 
 public extension String {
     public static func random(_ length: Int = 32) -> String {
-        let chars = Array<Character>("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".characters)
+        let chars = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         let charsCount = UInt32(chars.count)
         
         var string = ""
@@ -35,10 +35,6 @@ public extension String {
     //
     // MARK: - Easier indexing -
     //
-    
-    public var length: Int {
-        return characters.count
-    }
     
     public func index(offset: Int) -> Index {
         return index(startIndex, offsetBy: offset)

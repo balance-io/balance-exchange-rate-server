@@ -9,11 +9,24 @@ import Foundation
 import XCTest
 @testable import BalanceServerLib
 
-class ExchangeRatesTests: XCTestCase {
+public class ExchangeRatesTests: XCTestCase {
     
-    var mockSession: MockSession!
+    // required for running tests from `swift test` command
+    public static var allTests : [(String, (ExchangeRatesTests) -> () throws -> Void)] {
+        return [("testConvert", testConvert),
+                ("testConvertFiat", testConvertFiat),
+                ("testConvertCryptoPoloniex", testConvertCryptoPoloniex),
+                ("testConvertCryptoBitfinex", testConvertCryptoBitfinex),
+                ("testConvertCryptoCoinbase", testConvertCryptoCoinbase),
+                ("testConvertCryptoKraken", testConvertCryptoKraken),
+                ("testConvertCryptoDoubleTransformCryptoToOtherFiat", testConvertCryptoDoubleTransformCryptoToOtherFiat),
+                ("testConvertCryptoLTCtoUSDinPoloniex", testConvertCryptoLTCtoUSDinPoloniex),
+                ("testConvertCryptoUSDTtoUSDinKraken", testConvertCryptoUSDTtoUSDinKraken)]
+    }
     
-    override func setUp() {
+    internal var mockSession: MockSession!
+    
+    override public func setUp() {
         super.setUp()
         mockSession = MockSession()
 
@@ -21,13 +34,13 @@ class ExchangeRatesTests: XCTestCase {
         loadExhangeInfo()
     }
     
-    override func tearDown() {
+    override public func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
         mockSession = nil
     }
     
-    func testConvert() {
+    public func testConvert() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
@@ -54,7 +67,7 @@ class ExchangeRatesTests: XCTestCase {
 //        XCTAssertNil(try exchangeRate.latestExchangeRates(forSource: .poloniex))
 //    }
     
-    func testConvertFiat() {
+    public func testConvertFiat() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allFiat, session: mockSession)
         
@@ -64,7 +77,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertEqual(exchange?.integerFixedFiatDecimals(), 849)
     }
     
-    func testConvertCryptoPoloniex() {
+    public func testConvertCryptoPoloniex() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
@@ -75,7 +88,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    func testConvertCryptoBitfinex() {
+    public func testConvertCryptoBitfinex() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
@@ -86,7 +99,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    func testConvertCryptoCoinbase() {
+    public func testConvertCryptoCoinbase() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
@@ -96,7 +109,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (53.04*10.0).integerFixedCryptoDecimals())
     }
     
-    func testConvertCryptoKraken() {
+    public func testConvertCryptoKraken() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
@@ -107,7 +120,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    func testConvertCryptoDoubleTransformCryptoToOtherFiat() {
+    public func testConvertCryptoDoubleTransformCryptoToOtherFiat() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
 
@@ -117,7 +130,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    func testConvertCryptoLTCtoUSDinPoloniex() {
+    public func testConvertCryptoLTCtoUSDinPoloniex() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
         
@@ -127,7 +140,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    func testConvertCryptoUSDTtoUSDinKraken() {
+    public func testConvertCryptoUSDTtoUSDinKraken() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
         
@@ -137,7 +150,7 @@ class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    func loadExhangeInfo() {
+    public func loadExhangeInfo() {
         let bitfinexData = TestHelpers.bitfinexData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "bitfinex", data: bitfinexData, statusCode: 200, headers: nil))
         

@@ -11,7 +11,7 @@ import Foundation
 import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
-import MySQL
+import PerfectMySQL
 
 // NOTE: Currently we are standardising all rates possible to USD then use the fiat exchange rate to get other fiat currencies.
 // Most exchanges will directly return a USD rate. Poloniex does not return any values in USD and Kraken only returns some. So
@@ -76,15 +76,15 @@ public struct ExchangeRatesHandlers {
     
     // NOTE: Called once per minute by a cron job
     public static func updateAllCryptoHandler(data: [String: Any]) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: .shared)
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: sharedSession)
     }
     
     // NOTE: Called once per day by a cron job
     public static func updateAllFiatHandler(data: [String: Any]) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: .shared)
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: sharedSession)
     }
     
-    public static func updateHandler(sources: [ExchangeRateSource], session: URLSession = .shared) -> RequestHandler {
+    public static func updateHandler(sources: [ExchangeRateSource], session: DataSession = sharedSession) -> RequestHandler {
         return { request, response in
             // Ensure this is a valid cron job request
             guard isValidCronRequest(request: request) else {

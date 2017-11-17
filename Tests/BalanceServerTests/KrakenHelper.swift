@@ -9,17 +9,17 @@ import Foundation
 import XCTest
 
 extension TestHelpers {
-    static var krakenData: Data {
+    public static var krakenData: Data {
         let jsonData = TestHelpers.krakenApiResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var krakenSimpleData: Data {
+    public static var krakenSimpleData: Data {
         let jsonData = TestHelpers.krakenSimpleResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static let krakenSimpleResponse = """
+    public static var krakenSimpleResponse = """
     {
     "error": [
     
@@ -65,7 +65,7 @@ extension TestHelpers {
     }}
     """
     
-    static let krakenApiResponse = """
+    public static var krakenApiResponse = """
     {
     "error": [
     
