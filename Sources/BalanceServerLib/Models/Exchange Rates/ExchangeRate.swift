@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import MySQL
 import PerfectLib
 import PerfectThread
+import PerfectMySQL
 
 public struct ExchangeRate {
     let source: ExchangeRateSource
