@@ -80,7 +80,7 @@ class ParserTests: XCTestCase {
         let exchangeRate = exchangeRates.first!
         
         //then
-        XCTAssertEqual(exchangeRate.source, ExchangeRateSource(rawValue: 2))
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.poloniex)
         XCTAssertEqual(exchangeRate.to, Currency.crypto(enum: .btc))
         XCTAssertEqual(exchangeRate.from, Currency.cryptoOther(code: "BCN"))
         XCTAssertEqual(exchangeRate.rate, 0.00000032) 
@@ -139,7 +139,7 @@ class ParserTests: XCTestCase {
         let exchangeRate = exchangeRates.first!
         
         //then
-        XCTAssertEqual(exchangeRate.source, ExchangeRateSource(rawValue: 3))
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.bitfinex)
         XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum: .btc))
         XCTAssertEqual(exchangeRate.rate, 4187.1)
@@ -198,7 +198,7 @@ class ParserTests: XCTestCase {
         let exchangeRate = exchangeRates.first!
         
         //then
-        XCTAssertEqual(exchangeRate.source, ExchangeRateSource(rawValue: 1))
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.coinbaseGdax)
         XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum: .btc))
         XCTAssertEqual(exchangeRate.rate, 4167.99)
@@ -257,10 +257,69 @@ class ParserTests: XCTestCase {
         let exchangeRate = exchangeRates.first!
         
         //then
-        XCTAssertEqual(exchangeRate.source, ExchangeRateSource(rawValue: 4))
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.kraken)
         XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum:.bch))
         XCTAssertEqual(exchangeRate.rate, 441.7)
+    }
+    
+    func testKucoinParsingDoesntGiveError() {
+        //given
+        let kucoinData = TestHelpers.kucoinData
+        
+        //when
+        let (_,error) = ExchangeRateParsing.kucoin(responseData: kucoinData)
+        
+        //then
+        XCTAssertNil(error)
+    }
+    
+    func testKucoinParsingThrowsErrorOnEmptyData() {
+        //given
+        let emptyData = TestHelpers.emptyData
+        
+        //when
+        let (_,error) = ExchangeRateParsing.kucoin(responseData: emptyData)
+        
+        //then
+        XCTAssertNotNil(error, (error?.errorDescription)!)
+    }
+    
+    func testKucoinParsingThrowsErrorOnWrongData() {
+        //given
+        let wrongData = TestHelpers.wrongData
+        
+        //when
+        let (_,error) = ExchangeRateParsing.kucoin(responseData: wrongData)
+        
+        //then
+        XCTAssertNotNil(error, (error?.errorDescription)!)
+    }
+    
+    func testKucoinParsingNumberOfObjects() {
+        //given
+        let krakenData = TestHelpers.kucoinData
+        
+        //when
+        let (exchangeRates,error) = ExchangeRateParsing.kucoin(responseData: krakenData)
+        
+        //then
+        XCTAssertEqual(exchangeRates.count, 52, (error?.errorDescription)!)
+    }
+    
+    func testKucoinParsingObjectProperties() {
+        //given
+        let krakenData = TestHelpers.kucoinSimpleData
+        
+        //when
+        let (exchangeRates,_) = ExchangeRateParsing.kucoin(responseData: krakenData)
+        let exchangeRate = exchangeRates.first!
+        
+        //then
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.kucoin)
+        XCTAssertEqual(exchangeRate.to, Currency.btc)
+        XCTAssertEqual(exchangeRate.from, Currency.rawValue("KCS"))
+        XCTAssertEqual(exchangeRate.rate, 9.1370000000000001e-05)
     }
 
     func testFixerParsingDoesntGiveError() {
@@ -316,7 +375,7 @@ class ParserTests: XCTestCase {
         let exchangeRate = exchangeRates.first!
         
         //then
-        XCTAssertEqual(exchangeRate.source, ExchangeRateSource(rawValue: 10001))
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.fixer)
         XCTAssertEqual(exchangeRate.to, Currency.gbp)
         XCTAssertEqual(exchangeRate.from, Currency.usd)
         XCTAssertEqual(exchangeRate.rate, 0.74406)

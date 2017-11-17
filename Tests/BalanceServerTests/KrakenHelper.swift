@@ -19,7 +19,7 @@ extension TestHelpers {
         return jsonData
     }
     
-    static var krakenSimpleResponse = """
+    static let krakenSimpleResponse = """
     {
     "error": [
     
@@ -65,7 +65,7 @@ extension TestHelpers {
     }}
     """
     
-    static var krakenApiResponse = """
+    static let krakenApiResponse = """
     {
     "error": [
     
