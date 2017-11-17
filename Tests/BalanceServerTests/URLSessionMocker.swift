@@ -1,13 +1,8 @@
 import Foundation
+import BalanceServerLib
 
-
-internal final class MockSession: URLSession
+internal final class MockSession: DataSession
 {
-    // Static
-    override static var shared: URLSession {
-        return MockSession()
-    }
-    
     // Internal
     internal var mockResponses = [Response]()
     
@@ -28,7 +23,7 @@ internal final class MockSession: URLSession
     
     // MARK: URLSession
     
-    override func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+    func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
     {
         self.urlRequests.append(request)
         

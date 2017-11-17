@@ -187,7 +187,7 @@ struct ExchangeRates {
 
     // MARK: Update
     
-    public static func updateExchangeRates(sources: [ExchangeRateSource], session: URLSession = .shared) {
+    public static func updateExchangeRates(sources: [ExchangeRateSource], session: DataSession = URLSession.shared) {
         let startTime = Date()
         // Call each API and store the rates
         // TODO: Rewrite this to be concurrent
@@ -209,7 +209,7 @@ struct ExchangeRates {
         }
     }
     
-    public static func updateRatesForExchange(source: ExchangeRateSource, startTime: Date, session: URLSession = .shared, completion: @escaping (BalanceError?) -> Void) {
+    public static func updateRatesForExchange(source: ExchangeRateSource, startTime: Date, session: DataSession = URLSession.shared, completion: @escaping (BalanceError?) -> Void) {
         guard let parseFunction = ExchangeRateParsing.function(forSource: source) else {
             completion(.unknownError)
             return
