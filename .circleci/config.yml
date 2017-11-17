@@ -6,7 +6,6 @@ jobs:
     steps:
       - checkout
       - run: apt-get update && apt-get install -y apt-utils && apt-get install -y libmysqlclient-dev libssl-dev uuid-dev
-      # - run: swift package generate-xcodeproj
-      # - run: swift build
+      - run: swift build
+      - run: .build/debug/BalanceServer
       - run: swift test
-      # - run: swift test --configuration release -Xswiftc -lPerfectCZlib -Xswiftc -lPerfectCHTTPParser

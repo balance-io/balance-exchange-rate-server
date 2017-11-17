@@ -20,13 +20,13 @@ public class IntegrationTests: XCTestCase {
         super.tearDown()
     }
     
-    public func notestHelloApiCall() {
+    public func testHelloApiCall() {
         self.checkHost()
     }
     
     private func checkHost() {
         //given
-//        let expectation = XCTestExpectation(description: "Get hello string")
+        let expectation = XCTestExpectation(description: "Get hello string")
         let url = URL(string: "http://0.0.0.0:8080/hello")!
         let expectedResponse = "hello"
         let datatask = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -41,12 +41,12 @@ public class IntegrationTests: XCTestCase {
                 }
                 XCTAssertNil(error)
                 XCTAssertEqual(response, expectedResponse)
-//                expectation.fulfill()
+                expectation.fulfill()
             }
         }
         
         //when
         datatask.resume()
-//        wait(for: [expectation], timeout: 2.0)
+        wait(for: [expectation], timeout: 2.0)
     }
 }
