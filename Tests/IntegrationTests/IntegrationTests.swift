@@ -9,11 +9,20 @@ import XCTest
 import Foundation
 
 public class IntegrationTests: XCTestCase {
-    
+	public static var allTests : [(String, (IntegrationTests) -> () throws -> Void)] {
+        return [("testHelloApiCall", testHelloApiCall)]
+    }    
+
     override public func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+    	
+		#if os(OSX)
+            DispatchQueue.global(qos: .background).async {
+                BalanceServer.start()
+            }
+        #endif
+	}
     
     override public func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
@@ -26,7 +35,7 @@ public class IntegrationTests: XCTestCase {
     
     private func checkHost() {
         //given
-        let expectation = XCTestExpectation(description: "Get hello string")
+        let expectation = self.expectation(description: "Get hello string")
         let url = URL(string: "http://0.0.0.0:8080/hello")!
         let expectedResponse = "hello"
         let session = URLSession(configuration: .default)
@@ -48,6 +57,6 @@ public class IntegrationTests: XCTestCase {
         
         //when
         datatask.resume()
-        wait(for: [expectation], timeout: 2.0)
+        waitForExpectations(timeout: 2.0)
     }
 }
