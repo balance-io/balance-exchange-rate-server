@@ -16,5 +16,5 @@ jobs:
       #- run: apt-get install -y python-dev libcurl4-openssl-dev mysql-client mysql-server
       #- run: ./scripts/createDatabaseForTesting.sh 
       - run: swift build
-      - run: .build/debug/BalanceServer
+      - run: .build/debug/BalanceServer &
       - run: swift test
