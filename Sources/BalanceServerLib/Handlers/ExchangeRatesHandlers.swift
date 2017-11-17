@@ -76,15 +76,15 @@ public struct ExchangeRatesHandlers {
     
     // NOTE: Called once per minute by a cron job
     public static func updateAllCryptoHandler(data: [String: Any]) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: URLSession.shared)
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: sharedSession)
     }
     
     // NOTE: Called once per day by a cron job
     public static func updateAllFiatHandler(data: [String: Any]) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: URLSession.shared)
+        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: sharedSession)
     }
     
-    public static func updateHandler(sources: [ExchangeRateSource], session: DataSession = URLSession.shared) -> RequestHandler {
+    public static func updateHandler(sources: [ExchangeRateSource], session: DataSession = sharedSession) -> RequestHandler {
         return { request, response in
             // Ensure this is a valid cron job request
             guard isValidCronRequest(request: request) else {

@@ -12,6 +12,8 @@ import PerfectHTTP
 import PerfectHTTPServer
 import PerfectMySQL
 
+internal let sharedSession = URLSession(configuration: .default)
+
 public struct BalanceServer {
     fileprivate static let routes = TestHandlers.routes + AppEngineHandlers.routes + BalanceHandlers.routes +
                                     CoinbaseHandlers.routes + ExchangeRatesHandlers.routes

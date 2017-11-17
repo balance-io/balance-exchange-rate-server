@@ -29,7 +29,8 @@ public class IntegrationTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Get hello string")
         let url = URL(string: "http://0.0.0.0:8080/hello")!
         let expectedResponse = "hello"
-        let datatask = URLSession.shared.dataTask(with: url) { data, response, error in
+        let session = URLSession(configuration: .default)
+        let datatask = session.dataTask(with: url) { data, response, error in
             
             //then
             do {
