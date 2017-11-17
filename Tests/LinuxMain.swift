@@ -4,5 +4,6 @@ import XCTest
 
 
 XCTMain([
-    testCase(CurrencyTests.allTests)
+    testCase(CurrencyTests.allTests), 
+    testCase(ExchangeRatesTests.allTests)
 ])

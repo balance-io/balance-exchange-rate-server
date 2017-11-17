@@ -11,6 +11,19 @@ import XCTest
 
 public class ExchangeRatesTests: XCTestCase {
     
+    // required for running tests from `swift test` command
+    public static var allTests : [(String, (ExchangeRatesTests) -> () throws -> Void)] {
+        return [("testConvert", testConvert),
+                ("testConvertFiat", testConvertFiat),
+                ("testConvertCryptoPoloniex", testConvertCryptoPoloniex),
+                ("testConvertCryptoBitfinex", testConvertCryptoBitfinex),
+                ("testConvertCryptoCoinbase", testConvertCryptoCoinbase),
+                ("testConvertCryptoKraken", testConvertCryptoKraken),
+                ("testConvertCryptoDoubleTransformCryptoToOtherFiat", testConvertCryptoDoubleTransformCryptoToOtherFiat),
+                ("testConvertCryptoLTCtoUSDinPoloniex", testConvertCryptoLTCtoUSDinPoloniex),
+                ("testConvertCryptoUSDTtoUSDinKraken", testConvertCryptoUSDTtoUSDinKraken)]
+    }
+    
     internal var mockSession: MockSession!
     
     override public func setUp() {
