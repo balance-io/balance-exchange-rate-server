@@ -5,8 +5,8 @@ jobs:
       - image: swift:4.0.2
     steps:
       - checkout
-      - run: apt-get update && apt-get install -y apt-utils && apt-get install -y libmysqlclient-dev libssl-dev uuid-dev
-      - run: ./scripts/createDatabaseForTesting.sh 
+      - run: apt-get update && apt-get install -y apt-utils && apt-get install -y libmysqlclient-dev libssl-dev uuid-dev && brew install mysql && brew services start mysql
+      - run: ./scripts/createDatabaseForTesting.sh
       - run: swift build
       - run: .build/debug/BalanceServer
       - run: swift test
