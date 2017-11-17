@@ -23,7 +23,7 @@ internal final class MockSession: DataSession
     
     // MARK: URLSession
     
-    func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+    public func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
     {
         self.urlRequests.append(request)
         

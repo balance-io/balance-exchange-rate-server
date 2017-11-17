@@ -9,17 +9,17 @@ import Foundation
 import XCTest
 
 extension TestHelpers {
-    static var bitfinexData: Data {
+    public static var bitfinexData: Data {
         let jsonData = TestHelpers.bitfinexApiResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var bitfinexSimpleData: Data {
+    public static var bitfinexSimpleData: Data {
         let jsonData = TestHelpers.bitfinexSimpleResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var bitfinexSimpleResponse = """
+    public static var bitfinexSimpleResponse = """
     [
      [
       "tBTCUSD",
@@ -37,7 +37,7 @@ extension TestHelpers {
     ]
     """
 
-    static var bitfinexApiResponse = """
+    public static var bitfinexApiResponse = """
     [
      [
       "tBTCUSD",

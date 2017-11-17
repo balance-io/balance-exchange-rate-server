@@ -8,23 +8,23 @@
 import XCTest
 import Foundation
 
-class IntegrationTests: XCTestCase {
+public class IntegrationTests: XCTestCase {
     
-    override func setUp() {
+    override public func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
-    override func tearDown() {
+    override public func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
-    func notestHelloApiCall() {
+    public func notestHelloApiCall() {
         self.checkHost()
     }
     
-    fileprivate func checkHost() {
+    private func checkHost() {
         //given
 //        let expectation = XCTestExpectation(description: "Get hello string")
         let url = URL(string: "http://0.0.0.0:8080/hello")!
