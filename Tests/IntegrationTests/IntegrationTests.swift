@@ -7,6 +7,8 @@
 
 import XCTest
 import Foundation
+import BalanceServerLib
+import PerfectThread
 
 public class IntegrationTests: XCTestCase {
 	public static var allTests : [(String, (IntegrationTests) -> () throws -> Void)] {
@@ -17,11 +19,9 @@ public class IntegrationTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     	
-		#if os(OSX)
-            DispatchQueue.global(qos: .background).async {
-                BalanceServer.start()
-            }
-        #endif
+        Threading.dispatch {
+            BalanceServer.start()
+        } 
 	}
     
     override public func tearDown() {
