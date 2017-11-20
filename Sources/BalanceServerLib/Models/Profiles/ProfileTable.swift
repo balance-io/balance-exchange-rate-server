@@ -52,7 +52,7 @@ public struct ProfileTable {
         return results.numRows > 0
     }
     
-    public static func register(email: String, password: String, mysql: MySQL? = connectToMysql()) throws -> Profile? {
+    public static func register(email: String, password: String, mysql: MySQL? = connectToMysql()) throws -> Bool {
         guard try !exists(email: email) else {
             throw BalanceError.invalidInputData
         }
@@ -66,7 +66,7 @@ public struct ProfileTable {
         }
         
         let passwordHash = try hashPassword(password: password)
-        let query = "INSERT INTO profiles VALUES (NULL, ?, ?, NOW(), NOW(), 0)"
+        let query = "INSERT INTO profiles VALUES (NULL, ?, ?, NOW(), NOW(), NULL, 0)"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query) else {
             throw BalanceError.databaseError
@@ -78,7 +78,59 @@ public struct ProfileTable {
             throw BalanceError.databaseError
         }
 
-        return try login(email: email, password: password)
+        return true
+    }
+    
+    public static func isLocked(loginFailures: UInt8, lastLoginAttempt: Date) -> Bool {
+        // Locked if more than 10 login failures in a row, with the last attempt less than an hour ago
+        return loginFailures >= 10 && Date().timeIntervalSince(lastLoginAttempt) < 60 * 60
+    }
+    
+    public static func updateSuccessfulLogin(profileId: UInt32, mysql: MySQL? = connectToMysql()) throws {
+        guard let mysql = mysql else {
+            throw BalanceError.databaseError
+        }
+        
+        defer {
+            mysql.close()
+        }
+        
+        let query = "UPDATE profiles SET lastLogin = NOW(), lastLoginAttempt = NOW(), loginFailures = 0 WHERE profileId = ?"
+        let statement = MySQLStmt(mysql)
+        guard statement.prepare(statement: query) else {
+            throw BalanceError.databaseError
+        }
+        statement.bindParam(UInt64(profileId))
+        guard statement.execute() else {
+            Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
+            throw BalanceError.databaseError
+        }
+    }
+    
+    public static func updateFailedLogin(email: String, failedLogins: UInt64, mysql: MySQL? = connectToMysql()) throws {
+        // TODO: increment loginFailures, set lastLoginAttempt to date
+        guard let mysql = mysql else {
+            throw BalanceError.databaseError
+        }
+        
+        defer {
+            mysql.close()
+        }
+        
+        // Don't allow the query to fail because of integer overflow
+        let loginFailures = failedLogins >= 255 ? 255 : failedLogins + 1
+        
+        let query = "UPDATE profiles SET lastLoginAttempt = NOW(), loginFailures = ? WHERE email = ?"
+        let statement = MySQLStmt(mysql)
+        guard statement.prepare(statement: query) else {
+            throw BalanceError.databaseError
+        }
+        statement.bindParam(loginFailures)
+        statement.bindParam(email)
+        guard statement.execute() else {
+            Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
+            throw BalanceError.databaseError
+        }
     }
     
     public static func login(email: String, password: String, mysql: MySQL? = connectToMysql()) throws -> Profile? {
@@ -90,14 +142,12 @@ public struct ProfileTable {
             mysql.close()
         }
         
-        let passwordHash = try hashPassword(password: password)
-        let query = "SELECT (profileId, created) FROM profiles WHERE email = ? AND password = ? LIMIT 1"
+        let query = "SELECT profileId, password, created, lastLoginAttempt, loginFailures FROM profiles WHERE email = ? LIMIT 1"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query) else {
             throw BalanceError.databaseError
         }
         statement.bindParam(email)
-        statement.bindParam(passwordHash)
         guard statement.execute() else {
             Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
             throw BalanceError.databaseError
@@ -105,26 +155,53 @@ public struct ProfileTable {
         
         let results = statement.results()
         if results.numRows == 0 {
-            // Account doesn't exist
-            // TODO: Increment failed login attempts
+            // Account doesn't exist at all
             return nil
         } else {
-            // TODO: Check failed login attempts
-            // TODO: Lock accounts for 1 hour after 10 failed attempts
             var profile: Profile?
+            var failedLogins: UInt64 = 0
             _ = results.forEachRow { element in
-                guard let profileId = element[0] as? UInt32, let created = element[1] as? Date else {
+                guard element.count == 5, let profileId = element[0] as? UInt32, let hashed = element[1] as? String, let createdString = element[2] as? String, let created = Date.from(mysqlFormatted: createdString), let lastLoginAttemptString = element[3] as? String, let lastLoginAttempt = Date.from(mysqlFormatted: lastLoginAttemptString), let loginFailures = element[4] as? UInt8 else {
                     return
                 }
                 
-                profile = Profile(profileId: profileId, email: email, created: created)
+                failedLogins = UInt64(loginFailures)
+                
+                // Check if account is locked
+                if isLocked(loginFailures: loginFailures, lastLoginAttempt: lastLoginAttempt) {
+                    return
+                }
+                
+                // Check the password matches
+                do {
+                    var success = false
+                    #if os(Linux)
+                        success = try checkPassword(password: password, hashed: hashed)
+                    #else
+                        if #available(OSX 10.12.1, *) {
+                            success = try checkPassword(password: password, hashed: hashed)
+                        }
+                    #endif
+                    
+                    if success {
+                        profile = Profile(profileId: profileId, email: email, created: created)
+                    }
+                } catch {
+                    Log.error(message: "login: exception in bcrypt: \(error)")
+                }
+            }
+            
+            if let profile = profile {
+                try updateSuccessfulLogin(profileId: profile.profileId)
+            } else {
+                try updateFailedLogin(email: email, failedLogins: failedLogins)
             }
             
             return profile
         }
     }
     
-    public static func createTable(mysql: MySQL? = connectToMysql()) -> Bool {
+    public static func createProfilesTable(mysql: MySQL? = connectToMysql()) -> Bool {
         guard let mysql = mysql else {
             return false
         }
@@ -133,7 +210,7 @@ public struct ProfileTable {
             mysql.close()
         }
         
-        let query = "CREATE TABLE IF NOT EXISTS profiles (profileId INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) UNIQUE, password CHAR(60) BINARY, created DATETIME, lastLogin DATETIME, loginFailures TINYINT UNSIGNED)"
+        let query = "CREATE TABLE IF NOT EXISTS profiles (profileId INT UNSIGNED PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) UNIQUE, password CHAR(60) BINARY, created DATETIME, lastLogin DATETIME, lastLoginAttempt DATETIME, loginFailures TINYINT UNSIGNED)"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
             Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")

@@ -28,7 +28,23 @@ public struct ProfileHandlers {
                     return
             }
             
-            
+            do {
+                if try ProfileTable.register(email: email, password: password) {
+                    sendSuccessJsonResponse(dict: [:], response: response)
+                    return
+                } else {
+                    sendErrorJsonResponse(error: .unknownError, response: response)
+                    return
+                }
+            } catch {
+                Log.error(message: "registerHandler: Failed to register user \(email): \(error)")
+                var returnError = BalanceError.unknownError
+                if let balanceError = error as? BalanceError {
+                    returnError = balanceError
+                }
+                sendErrorJsonResponse(error: returnError, response: response)
+                return
+            }
         }
     }
     
@@ -38,9 +54,27 @@ public struct ProfileHandlers {
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
                 let email = params?["email"] as? String,
                 let password = params?["password"] as? String else {
-                    Log.error(message: "registerHandler: Invalid input data")
+                    Log.error(message: "loginHandler: Invalid input data")
                     sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
                     return
+            }
+            
+            do {
+                if let _ = try ProfileTable.login(email: email, password: password) {
+                    sendSuccessJsonResponse(dict: [:], response: response)
+                    return
+                } else {
+                    sendErrorJsonResponse(error: .unknownError, response: response)
+                    return
+                }
+            } catch {
+                Log.error(message: "loginHandler: Failed to register user \(email): \(error)")
+                var returnError = BalanceError.unknownError
+                if let balanceError = error as? BalanceError {
+                    returnError = balanceError
+                }
+                sendErrorJsonResponse(error: returnError, response: response)
+                return
             }
         }
     }
@@ -54,6 +88,8 @@ public struct ProfileHandlers {
                     sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
                     return
             }
+            
+            // TODO: Once MailGun is implemented
         }
     }
 }
