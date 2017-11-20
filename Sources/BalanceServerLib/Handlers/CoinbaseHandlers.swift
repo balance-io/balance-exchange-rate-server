@@ -94,7 +94,7 @@ public struct CoinbaseHandlers {
     }
     
     // Gets the access token from the Coinbase API
-    fileprivate static func getAccessToken(postData: Data, session: URLSession = .shared, completion: @escaping ([String: Any?], BalanceError?) -> Void) {
+    fileprivate static func getAccessToken(postData: Data, session: DataSession = sharedSession, completion: @escaping ([String: Any?], BalanceError?) -> Void) {
         let url = URL(string: "https://api.coinbase.com/oauth/token")!
         var request = URLRequest(url: url)
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")

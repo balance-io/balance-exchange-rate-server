@@ -10,17 +10,17 @@ import XCTest
 
 extension TestHelpers {
 
-    static var poloniexData: Data {
+    public static var poloniexData: Data {
         let jsonData = TestHelpers.poloniexApiResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var poloniexSimpleData: Data {
+    public static var poloniexSimpleData: Data {
         let jsonData = TestHelpers.poloniexSimpleResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var poloniexSimpleResponse = """
+    public static var poloniexSimpleResponse = """
     {
     "BTC_BCN": {
         "id": 7,
@@ -37,7 +37,7 @@ extension TestHelpers {
     }
     """
     
-    static var poloniexApiResponse = """
+    public static var poloniexApiResponse = """
     {
     "BTC_BCN": {
         "id": 7,

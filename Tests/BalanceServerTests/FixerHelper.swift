@@ -10,17 +10,17 @@ import XCTest
 
 extension TestHelpers {
     
-    static var fixerSimpleData: Data {
+    public static var fixerSimpleData: Data {
         let jsonData = TestHelpers.fixerSimpleResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var fixerData: Data {
+    public static var fixerData: Data {
         let jsonData = TestHelpers.fixerResponse.data(using: .utf8)!
         return jsonData
     }
     
-    static var fixerSimpleResponse = """
+    public static var fixerSimpleResponse = """
     {
         "base": "USD",
         "date": "2017-09-28",
@@ -30,7 +30,7 @@ extension TestHelpers {
     }
     """
     
-    static var fixerResponse = """
+    public static var fixerResponse = """
     {
         "base": "USD",
         "date": "2017-09-28",

@@ -10,7 +10,9 @@ import Foundation
 import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
-import MySQL
+import PerfectMySQL
+
+internal let sharedSession = URLSession(configuration: .default)
 
 public struct BalanceServer {
     fileprivate static let routes = TestHandlers.routes + AppEngineHandlers.routes + BalanceHandlers.routes +
