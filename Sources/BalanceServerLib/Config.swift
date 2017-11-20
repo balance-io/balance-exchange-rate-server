@@ -18,7 +18,7 @@ struct Config {
         #if os(OSX) || DEBUG
         static let host = "127.0.0.1"
         static let user = "root"
-        static let pass = ""
+        static let pass = "test"
         static let socket: String? = nil
         #else
         static let host: String? = nil

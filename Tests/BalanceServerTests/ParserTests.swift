@@ -8,26 +8,26 @@
 import XCTest
 @testable import BalanceServerLib
 
-class ParserTests: XCTestCase {
+public class ParserTests: XCTestCase {
     
-    var json: [String:AnyObject]!
+    public var json: [String:AnyObject]!
 
-    override func setUp() {
+    override public func setUp() {
         super.setUp()
         self.json = [String:AnyObject]()
     }
     
-    override func tearDown() {
+    override public func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
-    func testParseFunctionNumberOfParsers() {
+    public func testParseFunctionNumberOfParsers() {
         //then
         XCTAssertEqual(ExchangeRateParsing.parseFunctions.count, ExchangeRateSource.all.count)
     }
     
-    func testPoloniexParsingDoesntGiveError() {
+    public func testPoloniexParsingDoesntGiveError() {
         //given
         let poloniexData = TestHelpers.poloniexData
         
@@ -38,7 +38,7 @@ class ParserTests: XCTestCase {
         XCTAssertNil(error)
     }
     
-    func testPoloniexParsingThrowsErrorOnEmptyData() {
+    public func testPoloniexParsingThrowsErrorOnEmptyData() {
         //given
         let poloniexData = TestHelpers.emptyData
         
@@ -49,7 +49,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testPoloniexParsingThrowsErrorOnWrongData() {
+    public func testPoloniexParsingThrowsErrorOnWrongData() {
         //given
         let poloniexData = TestHelpers.wrongData
         
@@ -60,7 +60,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testPoloniexParsingNumberOfObjects() {
+    public func testPoloniexParsingNumberOfObjects() {
         //given
         let poloniexData = TestHelpers.poloniexData
         
@@ -71,7 +71,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRates.count, 101,(error?.errorDescription)!)
     }
     
-    func testPoloniexParsingObjectProperties() {
+    public func testPoloniexParsingObjectProperties() {
         //given
         let poloniexData = TestHelpers.poloniexSimpleData
         
@@ -86,7 +86,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRate.rate, 0.00000032) 
     }
     
-    func testBitfinexxParsingDoesntGiveError() {
+    public func testBitfinexxParsingDoesntGiveError() {
         //given
         let bitfinexData = TestHelpers.bitfinexData
         
@@ -97,7 +97,7 @@ class ParserTests: XCTestCase {
         XCTAssertNil(error)
     }
     
-    func testBitfinexParsingThrowsErrorOnEmptyData() {
+    public func testBitfinexParsingThrowsErrorOnEmptyData() {
         //given
         let emptyData = TestHelpers.emptyData
         
@@ -108,7 +108,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testBitfinexParsingThrowsErrorOnWrongData() {
+    public func testBitfinexParsingThrowsErrorOnWrongData() {
         //given
         let wrongData = TestHelpers.wrongData
         
@@ -119,7 +119,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testBitfinexParsingNumberOfObjects() {
+    public func testBitfinexParsingNumberOfObjects() {
         //given
         let bitfinexData = TestHelpers.bitfinexData
         
@@ -130,7 +130,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRates.count, 15,(error?.errorDescription)!)
     }
     
-    func testBitfinexParsingObjectProperties() {
+    public func testBitfinexParsingObjectProperties() {
         //given
         let bitfinexData = TestHelpers.bitfinexSimpleData
         
@@ -145,7 +145,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRate.rate, 4187.1)
     }
     
-    func testCoinbaseParsingDoesntGiveError() {
+    public func testCoinbaseParsingDoesntGiveError() {
         //given
         let coinbaseData = TestHelpers.coinbaseData
         
@@ -156,7 +156,7 @@ class ParserTests: XCTestCase {
         XCTAssertNil(error)
     }
     
-    func testCoinbaseParsingThrowsErrorOnEmptyData() {
+    public func testCoinbaseParsingThrowsErrorOnEmptyData() {
         //given
         let emptyData = TestHelpers.emptyData
         
@@ -167,7 +167,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testCoinbaseParsingThrowsErrorOnWrongData() {
+    public func testCoinbaseParsingThrowsErrorOnWrongData() {
         //given
         let wrongData = TestHelpers.wrongData
         
@@ -178,7 +178,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testCoinbaseParsingNumberOfObjects() {
+    public func testCoinbaseParsingNumberOfObjects() {
         //given
         let coinbaseData = TestHelpers.coinbaseData
         
@@ -189,7 +189,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRates.count, 3,(error?.errorDescription)!)
     }
     
-    func testCoinbaseParsingObjectProperties() {
+    public func testCoinbaseParsingObjectProperties() {
         //given
         let coinbaseData = TestHelpers.coinbaseSimpleData
         
@@ -204,7 +204,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRate.rate, 4167.99)
     }
     
-    func testKrakenParsingDoesntGiveError() {
+    public func testKrakenParsingDoesntGiveError() {
         //given
         let krakenData = TestHelpers.krakenData
         
@@ -215,7 +215,7 @@ class ParserTests: XCTestCase {
         XCTAssertNil(error)
     }
     
-    func testKrakenParsingThrowsErrorOnEmptyData() {
+    public func testKrakenParsingThrowsErrorOnEmptyData() {
         //given
         let emptyData = TestHelpers.emptyData
         
@@ -226,7 +226,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testKrakenParsingThrowsErrorOnWrongData() {
+    public func testKrakenParsingThrowsErrorOnWrongData() {
         //given
         let wrongData = TestHelpers.wrongData
         
@@ -237,7 +237,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testKrakenParsingNumberOfObjects() {
+    public func testKrakenParsingNumberOfObjects() {
         //given
         let krakenData = TestHelpers.krakenData
         
@@ -248,7 +248,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRates.count, 17,(error?.errorDescription)!)
     }
     
-    func testKrakenParsingObjectProperties() {
+    public func testKrakenParsingObjectProperties() {
         //given
         let krakenData = TestHelpers.krakenSimpleData
         
@@ -263,7 +263,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRate.rate, 441.7)
     }
 
-    func testFixerParsingDoesntGiveError() {
+    public func testFixerParsingDoesntGiveError() {
         //given
         let fixerData = TestHelpers.fixerData
         
@@ -274,7 +274,7 @@ class ParserTests: XCTestCase {
         XCTAssertNil(error)
     }
     
-    func testFixerParsingThrowsErrorOnEmptyData() {
+    public func testFixerParsingThrowsErrorOnEmptyData() {
         //given
         let emptyData = TestHelpers.emptyData
         
@@ -285,7 +285,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testFixerParsingThrowsErrorOnWrongData() {
+    public func testFixerParsingThrowsErrorOnWrongData() {
         //given
         let wrongData = TestHelpers.wrongData
         
@@ -296,7 +296,7 @@ class ParserTests: XCTestCase {
         XCTAssertNotNil(error,(error?.errorDescription)!)
     }
     
-    func testFixerParsingNumberOfObjects() {
+    public func testFixerParsingNumberOfObjects() {
         //given
         let fixerData = TestHelpers.fixerData
         
@@ -307,7 +307,7 @@ class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRates.count, 31,(error?.errorDescription)!)
     }
     
-    func testFixerParsingObjectProperties() {
+    public func testFixerParsingObjectProperties() {
         //given
         let fixerData = TestHelpers.fixerSimpleData
         

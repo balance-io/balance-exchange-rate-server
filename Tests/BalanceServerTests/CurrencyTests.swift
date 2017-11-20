@@ -9,24 +9,31 @@
 import XCTest
 @testable import BalanceServerLib
 
-class CurrencyTests: XCTestCase {
+public class CurrencyTests: XCTestCase {
     
-    // required for running tests from swift
-    static var allTests : [(String, (CurrencyTests) -> () throws -> Void)] {
-        return [("testBitcoinEquality", testBitcoinEquality)]
+    // required for running tests from `swift test` command
+    public static var allTests : [(String, (CurrencyTests) -> () throws -> Void)] {
+        return [("testBitcoinEquality", testBitcoinEquality),
+                ("testNumberOfDecimalsForDollar", testNumberOfDecimalsForDollar),
+                ("testNumberOfDecimalsForPound", testNumberOfDecimalsForPound),
+                ("testNumberOfDecimalsForBTC", testNumberOfDecimalsForBTC),
+                ("testNumberOfDecimalsForBTC", testNumberOfDecimalsForEther),
+                ("testNumberOfDecimalsForOtherCryptoSC", testNumberOfDecimalsForOtherCryptoSC),
+                ("testNumberOfDecimalsForOtherCryptoXRP", testNumberOfDecimalsForOtherCryptoXRP),
+                ("testTryCoin", testTryCoin)]
     }
     
-    override func setUp() {
+    override public func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
-    override func tearDown() {
+    override public func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
-    func testBitcoinEquality() {
+    public func testBitcoinEquality() {
         XCTAssert(Currency.btc == Currency.btc)
         XCTAssert(Currency.rawValue("XBT") == Currency.btc)
         XCTAssert(Currency.btc == Currency.rawValue("XBT"))
@@ -34,7 +41,7 @@ class CurrencyTests: XCTestCase {
     }
     
     
-    func testNumberOfDecimalsForDollar() {
+    public func testNumberOfDecimalsForDollar() {
         //given
         let currency = Currency.rawValue("USD")
         
@@ -42,7 +49,7 @@ class CurrencyTests: XCTestCase {
         XCTAssertEqual(currency.decimals, 2)
     }
     
-    func testNumberOfDecimalsForPound() {
+    public func testNumberOfDecimalsForPound() {
         //given
         let currency = Currency.rawValue("GBP")
 
@@ -50,7 +57,7 @@ class CurrencyTests: XCTestCase {
         XCTAssertEqual(currency.decimals, 2)
     }
 
-    func testNumberOfDecimalsForBTC() {
+    public func testNumberOfDecimalsForBTC() {
         //given
         let currency = Currency.rawValue("BTC")
 
@@ -58,7 +65,7 @@ class CurrencyTests: XCTestCase {
         XCTAssertEqual(currency.decimals, 8)
     }
 
-    func testNumberOfDecimalsForEther() {
+    public func testNumberOfDecimalsForEther() {
         //given
         let currency = Currency.rawValue("ETH")
 
@@ -66,7 +73,7 @@ class CurrencyTests: XCTestCase {
         XCTAssertEqual(currency.decimals, 8)
     }
 
-    func testNumberOfDecimalsForOtherCryptoSC() {
+    public func testNumberOfDecimalsForOtherCryptoSC() {
         //given
         let currency = Currency.rawValue("SC")
 
@@ -74,7 +81,7 @@ class CurrencyTests: XCTestCase {
         XCTAssertEqual(currency.decimals, 8)
     }
 
-    func testNumberOfDecimalsForOtherCryptoXRP() {
+    public func testNumberOfDecimalsForOtherCryptoXRP() {
         //given
         let currency = Currency.rawValue("XRP")
 
@@ -82,7 +89,7 @@ class CurrencyTests: XCTestCase {
         XCTAssertEqual(currency.decimals, 8)
     }
     
-    func testTryCoin() {
+    public func testTryCoin() {
         //given
         let currency = Currency.rawValue("TRY")
         

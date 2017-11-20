@@ -8,7 +8,7 @@
 import Foundation
 import PerfectLib
 import PerfectBCrypt
-import MySQL
+import PerfectMySQL
 
 public struct ProfileTable {
     public static func hashPassword(password: String) throws -> String {

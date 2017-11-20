@@ -7,29 +7,39 @@
 
 import XCTest
 import Foundation
+import BalanceServerLib
+import PerfectThread
 
-class IntegrationTests: XCTestCase {
-    
-    override func setUp() {
+public class IntegrationTests: XCTestCase {
+	public static var allTests : [(String, (IntegrationTests) -> () throws -> Void)] {
+        return [("testHelloApiCall", testHelloApiCall)]
+    }    
+
+    override public func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+    	
+        Threading.dispatch {
+            BalanceServer.start()
+        } 
+	}
     
-    override func tearDown() {
+    override public func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
-    func testHelloApiCall() {
+    public func testHelloApiCall() {
         self.checkHost()
     }
     
-    fileprivate func checkHost() {
+    private func checkHost() {
         //given
-        let expectation = XCTestExpectation(description: "Get hello string")
+        let expectation = self.expectation(description: "Get hello string")
         let url = URL(string: "http://0.0.0.0:8080/hello")!
         let expectedResponse = "hello"
-        let datatask = URLSession.shared.dataTask(with: url) { data, response, error in
+        let session = URLSession(configuration: .default)
+        let datatask = session.dataTask(with: url) { data, response, error in
             
             //then
             do {
@@ -47,6 +57,6 @@ class IntegrationTests: XCTestCase {
         
         //when
         datatask.resume()
-        wait(for: [expectation], timeout: 2.0)
+        waitForExpectations(timeout: 2.0)
     }
 }

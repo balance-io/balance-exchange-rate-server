@@ -9,7 +9,7 @@
 import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
-import MySQL
+import PerfectMySQL
 
 public struct TestHandlers {
     // If you want to serve static files, add the following entry to the routes dictionary. In this case

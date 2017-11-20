@@ -9,7 +9,7 @@
 import Foundation
 import PerfectLib
 import PerfectHTTP
-import MySQL
+import PerfectMySQL
 
 public enum ResponseFields: String {
     case code

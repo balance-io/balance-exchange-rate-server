@@ -9,7 +9,7 @@ import Foundation
 import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
-import MySQL
+import PerfectMySQL
 import bcrypt
 
 public struct ProfileHandlers {
