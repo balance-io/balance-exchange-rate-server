@@ -23,16 +23,6 @@ public class CurrencyTests: XCTestCase {
                 ("testTryCoin", testTryCoin)]
     }
     
-    override public func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override public func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
     public func testBitcoinEquality() {
         XCTAssert(Currency.btc == Currency.btc)
         XCTAssert(Currency.rawValue("XBT") == Currency.btc)

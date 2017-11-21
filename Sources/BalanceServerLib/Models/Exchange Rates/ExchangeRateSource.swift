@@ -13,6 +13,7 @@ public enum ExchangeRateSource: Int {
     case poloniex     = 2
     case bitfinex     = 3
     case kraken       = 4
+    case kucoin       = 5
     
     // Fiat
     case fixer        = 10001
@@ -29,7 +30,8 @@ public enum ExchangeRateSource: Int {
         case .kraken:
             // TODO: Call https://api.kraken.com/0/public/AssetPairs API to get the current asset pairs instead of updating manually
             return URL(string: "https://api.kraken.com/0/public/Ticker?pair=BCHUSD,DASHUSD,XETCZUSD,XETHZUSD,XLTCZUSD,XXBTZUSD,XXMRZUSD,XXRPZUSD,XZECZUSD,EOSXBT,GNOXBT,XICNXXBT,XMLNXXBT,XREPXXBT,XXDGXXBT,XXLMXXBT,XXMRXXBT")!
-            
+        case .kucoin:
+            return URL(string: "https://api.kucoin.com/v1/open/tick")!
         case .fixer:
             return URL(string: "http://api.fixer.io/latest?base=USD")!
         }
@@ -62,12 +64,12 @@ public enum ExchangeRateSource: Int {
         switch self {
 //        case .poloniex: return [.btc, .eth]
 //        case .kraken: return [.usd, .btc]
-        default: return [.btc,.eth,.usd]
+        default: return [.btc, .eth, .usd]
         }
     }
     
     public static var allCrypto: [ExchangeRateSource] {
-        return [.coinbaseGdax, .poloniex, .bitfinex, .kraken]
+        return [.coinbaseGdax, .poloniex, .bitfinex, .kraken, .kucoin]
     }
     
     public static var allFiat: [ExchangeRateSource] {

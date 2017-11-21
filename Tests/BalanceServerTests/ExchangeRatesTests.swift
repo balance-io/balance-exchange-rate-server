@@ -19,9 +19,11 @@ public class ExchangeRatesTests: XCTestCase {
                 ("testConvertCryptoBitfinex", testConvertCryptoBitfinex),
                 ("testConvertCryptoCoinbase", testConvertCryptoCoinbase),
                 ("testConvertCryptoKraken", testConvertCryptoKraken),
+                ("testConvertCryptoKucoin", testConvertCryptoKucoin),
                 ("testConvertCryptoDoubleTransformCryptoToOtherFiat", testConvertCryptoDoubleTransformCryptoToOtherFiat),
                 ("testConvertCryptoLTCtoUSDinPoloniex", testConvertCryptoLTCtoUSDinPoloniex),
-                ("testConvertCryptoUSDTtoUSDinKraken", testConvertCryptoUSDTtoUSDinKraken)]
+                ("testConvertCryptoUSDTtoUSDinKraken", testConvertCryptoUSDTtoUSDinKraken),
+                ("testConvertCryptoRDNtoUSDinKucoin", testConvertCryptoRDNtoUSDinKucoin)]
     }
     
     internal var mockSession: MockSession!
@@ -120,6 +122,17 @@ public class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
+    public func testConvertCryptoKucoin() {
+        //when
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
+        
+        //then
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .kucoin))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: Currency.rawValue("RDN"), to: .btc, source: ExchangeRateSource.kucoin)
+        //        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (441.7*10.0).integerFixedCryptoDecimals())
+        XCTAssertNotNil(exchange)
+    }
+    
     public func testConvertCryptoDoubleTransformCryptoToOtherFiat() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
@@ -150,6 +163,16 @@ public class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
+    public func testConvertCryptoRDNtoUSDinKucoin() {
+        //when
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.all, session: mockSession)
+        
+        //then
+        let exchange = ExchangeRates.convert(amount: 10.0, from: Currency.rawValue("RDN"), to: .usd, source: .kucoin)
+        //        XCTAssertEqual(exchange?.integerFixedFiatDecimals(), (53.0*10.0).integerFixedFiatDecimals())
+        XCTAssertNotNil(exchange)
+    }
+    
     public func loadExhangeInfo() {
         let bitfinexData = TestHelpers.bitfinexData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "bitfinex", data: bitfinexData, statusCode: 200, headers: nil))
@@ -165,5 +188,8 @@ public class ExchangeRatesTests: XCTestCase {
         
         let coinbaseData = TestHelpers.coinbaseData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "coinbase", data: coinbaseData, statusCode: 200, headers: nil))
+        
+        let kucoinData = TestHelpers.kucoinData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "kucoin", data: kucoinData, statusCode: 200, headers: nil))
     }
 }

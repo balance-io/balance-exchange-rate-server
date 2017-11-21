@@ -1,5 +1,5 @@
 # Use the latest Swift from Docker Hub
-FROM swift:3.1.0
+FROM swift:4.0.2
 
 # Add current application
 ADD . /app

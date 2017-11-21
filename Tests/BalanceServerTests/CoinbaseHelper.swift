@@ -1,5 +1,5 @@
 //
-//  coinbaseHelper.swift
+//  CoinbaseHelper.swift
 //  BalanceServerTests
 //
 //  Created by Raimon Lapuente Ferran on 03/10/2017.

@@ -7,5 +7,6 @@ import XCTest
 XCTMain([
     testCase(CurrencyTests.allTests), 
     testCase(ExchangeRatesTests.allTests),
+    testCase(ParserTests.allTests),
     testCase(IntegrationTests.allTests)
 ])
