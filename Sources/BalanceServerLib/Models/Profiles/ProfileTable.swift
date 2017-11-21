@@ -161,10 +161,14 @@ public struct ProfileTable {
             var profile: Profile?
             var failedLogins: UInt64 = 0
             _ = results.forEachRow { element in
-                guard element.count == 5, let profileId = element[0] as? UInt32, let hashed = element[1] as? String, let createdString = element[2] as? String, let created = Date.from(mysqlFormatted: createdString), let lastLoginAttemptString = element[3] as? String, let lastLoginAttempt = Date.from(mysqlFormatted: lastLoginAttemptString), let loginFailures = element[4] as? UInt8 else {
+                guard element.count == 5, let profileId = element[0] as? UInt32, let hashed = element[1] as? String, let createdString = element[2] as? String, let created = Date.from(mysqlFormatted: createdString), let loginFailures = element[4] as? UInt8 else {
                     return
                 }
                 
+                var lastLoginAttempt = Date.distantPast
+                if let lastLoginAttemptString = element[3] as? String, let lastLoginAttemptDate = Date.from(mysqlFormatted: lastLoginAttemptString) {
+                    lastLoginAttempt = lastLoginAttemptDate
+                }
                 failedLogins = UInt64(loginFailures)
                 
                 // Check if account is locked
@@ -201,6 +205,7 @@ public struct ProfileTable {
         }
     }
     
+    @discardableResult
     public static func createProfilesTable(mysql: MySQL? = connectToMysql()) -> Bool {
         guard let mysql = mysql else {
             return false
@@ -220,7 +225,8 @@ public struct ProfileTable {
         return true
     }
     
-    public static func dropTable(mysql: MySQL? = connectToMysql()) -> Bool {
+    @discardableResult
+    public static func dropProfilesTable(mysql: MySQL? = connectToMysql()) -> Bool {
         guard let mysql = mysql else {
             return false
         }
