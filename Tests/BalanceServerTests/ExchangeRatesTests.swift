@@ -127,7 +127,7 @@ public class ExchangeRatesTests: XCTestCase {
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
         //then
-        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .kraken))
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .kucoin))
         let exchange = ExchangeRates.convert(amount: 10.0, from: Currency.rawValue("RDN"), to: .btc, source: ExchangeRateSource.kucoin)
         //        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (441.7*10.0).integerFixedCryptoDecimals())
         XCTAssertNotNil(exchange)
@@ -188,5 +188,8 @@ public class ExchangeRatesTests: XCTestCase {
         
         let coinbaseData = TestHelpers.coinbaseData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "coinbase", data: coinbaseData, statusCode: 200, headers: nil))
+        
+        let kucoinData = TestHelpers.kucoinData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "kucoin", data: kucoinData, statusCode: 200, headers: nil))
     }
 }
