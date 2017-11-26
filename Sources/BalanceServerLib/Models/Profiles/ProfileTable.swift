@@ -17,16 +17,16 @@ public struct ProfileTable {
         return hash
     }
     
-    #if os(Linux)
-        public static func checkPassword(password: String, hashed: String) throws -> Bool {
+    public static func checkPassword(password: String, hashed: String) throws -> Bool {
+        #if os(Linux)
             return BCrypt.Check(password, hashed: hashed)
-        }
-    #else
-        @available(OSX 10.12.1, *)
-        public static func checkPassword(password: String, hashed: String) throws -> Bool {
-            return BCrypt.Check(password, hashed: hashed)
-        }
-    #endif
+        #else
+            if #available(OSX 10.12.1, *) {
+                return BCrypt.Check(password, hashed: hashed)
+            }
+        #endif
+        return false
+    }
     
     public static func exists(email: String, mysql: MySQL? = connectToMysql()) throws -> Bool {
         guard let mysql = mysql else {
@@ -178,16 +178,7 @@ public struct ProfileTable {
                 
                 // Check the password matches
                 do {
-                    var success = false
-                    #if os(Linux)
-                        success = try checkPassword(password: password, hashed: hashed)
-                    #else
-                        if #available(OSX 10.12.1, *) {
-                            success = try checkPassword(password: password, hashed: hashed)
-                        }
-                    #endif
-                    
-                    if success {
+                    if try checkPassword(password: password, hashed: hashed) {
                         profile = Profile(profileId: profileId, email: email, created: created)
                     }
                 } catch {
