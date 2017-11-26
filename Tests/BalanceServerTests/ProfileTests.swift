@@ -22,98 +22,107 @@ public class ProfileTests: XCTestCase {
     
     public func testRegister() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test@test.com"
         let password = "test"
         
         //then
-        XCTAssert(try! ProfileTable.register(email: email, password: password))
+        var success = false
+        XCTAssertNoThrow(success = try ProfileTable.register(email: email, password: password))
+        XCTAssertTrue(success)
     }
     
     public func testExists() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test@test.com"
         let password = "test"
-        _ = try! ProfileTable.register(email: email, password: password)
+        XCTAssertNoThrow(_ = try ProfileTable.register(email: email, password: password))
         
         //then
-        XCTAssert(try! ProfileTable.exists(email: email))
+        var exists = false
+        XCTAssertNoThrow(exists = try ProfileTable.exists(email: email))
+        XCTAssertTrue(exists)
     }
     
     public func testNotExists() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test@test.com"
         
         //then
-        XCTAssert(try! !ProfileTable.exists(email: email))
+        var exists = true
+        XCTAssertNoThrow(exists = try ProfileTable.exists(email: email))
+        XCTAssertFalse(exists)
     }
     
     public func testLogin() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test@test.com"
         let password = "test"
-        _ = try! ProfileTable.register(email: email, password: password)
+        XCTAssertNoThrow(_ = try ProfileTable.register(email: email, password: password))
         
         //then
-        let profile = try! ProfileTable.login(email: email, password: password)
-        XCTAssert(profile != nil)
+        var profile: Profile? = nil
+        XCTAssertNoThrow(profile = try ProfileTable.login(email: email, password: password))
+        XCTAssertNotNil(profile)
     }
     
     public func testRegisterAlreadyExists() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test@test.com"
         let password = "test"
-        _ = try! ProfileTable.register(email: email, password: password)
+        XCTAssertNoThrow(_ = try! ProfileTable.register(email: email, password: password))
         
         //then
-        let success = try? ProfileTable.register(email: email, password: password)
-        XCTAssert(success != true)
+        XCTAssertThrowsError(_ = try ProfileTable.register(email: email, password: password))
     }
     
     public func testLoginWrongEmail() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test2@test.com"
         let password = "test"
         
         //then
-        let profile = try! ProfileTable.login(email: email, password: password)
-        XCTAssert(profile == nil)
+        var profile: Profile? = nil
+        XCTAssertNoThrow(profile = try ProfileTable.login(email: email, password: password))
+        XCTAssertNil(profile)
     }
     
     public func testLoginWrongPassword() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test@test.com"
         let password = "test"
         let wrongPassword = "test2"
-        _ = try! ProfileTable.register(email: email, password: password)
+        XCTAssertNoThrow(_ = try! ProfileTable.register(email: email, password: password))
         
         //then
-        let profile = try! ProfileTable.login(email: email, password: wrongPassword)
-        XCTAssert(profile == nil)
+        var profile: Profile? = nil
+        XCTAssertNoThrow(profile = try ProfileTable.login(email: email, password: wrongPassword))
+        XCTAssertNil(profile)
     }
     
     public func testLoginWrongEmailAndPassword() {
         //given
-        ProfileTable.dropProfilesTable()
-        ProfileTable.createProfilesTable()
+        XCTAssertNoThrow(try ProfileTable.dropProfilesTable())
+        XCTAssertNoThrow(try ProfileTable.createProfilesTable())
         let email = "test2@test.com"
         let password = "test2"
         
         //then
-        let profile = try! ProfileTable.login(email: email, password: password)
-        XCTAssert(profile == nil)
+        var profile: Profile? = nil
+        XCTAssertNoThrow(profile = try ProfileTable.login(email: email, password: password))
+        XCTAssertNil(profile)
     }
 }

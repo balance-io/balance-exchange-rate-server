@@ -196,10 +196,9 @@ public struct ProfileTable {
         }
     }
     
-    @discardableResult
-    public static func createProfilesTable(mysql: MySQL? = connectToMysql()) -> Bool {
+    public static func createProfilesTable(mysql: MySQL? = connectToMysql()) throws {
         guard let mysql = mysql else {
-            return false
+            throw BalanceError.databaseError
         }
         
         defer {
@@ -210,16 +209,13 @@ public struct ProfileTable {
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
             Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
-            return false
+            throw BalanceError.databaseError
         }
-        
-        return true
     }
     
-    @discardableResult
-    public static func dropProfilesTable(mysql: MySQL? = connectToMysql()) -> Bool {
+    public static func dropProfilesTable(mysql: MySQL? = connectToMysql()) throws {
         guard let mysql = mysql else {
-            return false
+            throw BalanceError.databaseError
         }
         
         defer {
@@ -230,9 +226,7 @@ public struct ProfileTable {
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
             Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
-            return false
+            throw BalanceError.databaseError
         }
-        
-        return true
     }
 }
