@@ -24,8 +24,8 @@ public struct ProfileTable {
             if #available(OSX 10.12.1, *) {
                 return BCrypt.Check(password, hashed: hashed)
             }
+            return false
         #endif
-        return false
     }
     
     public static func exists(email: String, mysql: MySQL? = connectToMysql()) throws -> Bool {
@@ -222,7 +222,7 @@ public struct ProfileTable {
             mysql.close()
         }
         
-        let query = "DROP TABLE profiles"
+        let query = "DROP TABLE IF EXISTS profiles"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
             Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
