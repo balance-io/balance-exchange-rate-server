@@ -16,7 +16,7 @@ internal let sharedSession = URLSession(configuration: .default)
 
 public struct BalanceServer {
     fileprivate static let routes = TestHandlers.routes + AppEngineHandlers.routes + BalanceHandlers.routes +
-                                    CoinbaseHandlers.routes + ExchangeRatesHandlers.routes
+                                    CoinbaseHandlers.routes + ExchangeRatesHandlers.routes + ProfileHandlers.routes
 
     fileprivate static let confData = [
         "servers": [
