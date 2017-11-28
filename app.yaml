@@ -1,9 +1,0 @@
-runtime: custom
-env: flex
-skip_files:
-- ^.git$
-- ^.build$
-- ^BalanceServer.xcodeproj$
-- ^README.md$
-#beta_settings:
-#  cloud_sql_instances: cloudsql-server-uri

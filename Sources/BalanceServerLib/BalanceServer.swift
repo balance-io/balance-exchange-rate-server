@@ -21,8 +21,8 @@ public struct BalanceServer {
     fileprivate static let confData = [
         "servers": [
             [
-                "name": Config.AppEngine.name,
-                "port": Config.AppEngine.port,
+                "name": Config.Server.name,
+                "port": Config.Server.port,
                 "routes": routes,
                 "filters":[
                     [

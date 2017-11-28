@@ -9,7 +9,7 @@
 import Foundation
 
 struct Config {
-    struct AppEngine {
+    struct Server {
         static let name = "localhost"
         static let port = 8080
     }
@@ -21,10 +21,20 @@ struct Config {
         static let pass = "test"
         static let socket: String? = nil
         #else
-        static let host: String? = nil
-        static let user = ""
-        static let pass = ""
-        static let socket = ""
+        static let host: String? = PrivateConfig.MySQL.host
+        static let user = PrivateConfig.MySQL.user
+        static let pass = PrivateConfig.MySQL.pass
+        static let socket = PrivateConfig.MySQL.socket
+        #endif
+    }
+    
+    struct Coinbase {
+        #if os(OSX) || DEBUG
+        static let clientId = ""
+        static let clientSecret = ""
+        #else
+        static let clientId = PrivateConfig.Coinbase.clientId
+        static let clientSecret = PrivateConfig.Coinbase.clientSecret
         #endif
     }
 }

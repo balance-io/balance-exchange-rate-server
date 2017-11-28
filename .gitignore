@@ -1,3 +1,6 @@
+# Make sure we don't check in our private information
+PrivateConfig.swift
+app.yaml
 
 # Created by https://www.gitignore.io/api/linux,swift,macos
 
