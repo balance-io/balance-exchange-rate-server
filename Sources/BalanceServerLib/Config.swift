@@ -15,7 +15,7 @@ struct Config {
     }
     
     struct MySQL {
-        #if os(OSX) || DEBUG
+        #if os(OSX) || DEBUG || CIRCLECI
         static let host = "127.0.0.1"
         static let user = "root"
         static let pass = "test"
@@ -29,7 +29,7 @@ struct Config {
     }
     
     struct Coinbase {
-        #if os(OSX) || DEBUG
+        #if os(OSX) || DEBUG || CIRCLECI
         static let clientId = ""
         static let clientSecret = ""
         #else
