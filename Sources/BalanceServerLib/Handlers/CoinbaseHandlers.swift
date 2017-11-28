@@ -10,9 +10,6 @@ import Foundation
 import PerfectLib
 import PerfectHTTP
 
-fileprivate let clientId = ""
-fileprivate let clientSecret = ""
-
 public struct CoinbaseHandlers {
     public static let routes = [["method": "post", "uri": "/coinbase/requestToken", "handler": requestTokenHandler],
                                 ["method": "post", "uri": "/coinbase/refreshToken", "handler": refreshTokenHandler]]
@@ -78,7 +75,7 @@ public struct CoinbaseHandlers {
         }
         
         // Prepare the data
-        var postData: [String: Any] = ["client_id": clientId, "client_secret": clientSecret]
+        var postData: [String: Any] = ["client_id": Config.Coinbase.clientId, "client_secret": Config.Coinbase.clientSecret]
         if let code = code {
             postData["grant_type"] = "authorization_code"
             postData["code"] = code
