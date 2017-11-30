@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y apt-utils && apt-get install -y libmysq
 EXPOSE 8080
 
 # Build release.
-RUN swift build --configuration release -Xswiftc -lPerfectCZlib -Xswiftc -lPerfectCHTTPParser
+RUN swift build --configuration release
 
 # Delete the source code
 RUN rm -rf Sources
