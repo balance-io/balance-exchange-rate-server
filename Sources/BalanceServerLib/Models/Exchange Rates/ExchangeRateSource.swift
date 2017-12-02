@@ -14,12 +14,15 @@ public enum ExchangeRateSource: Int {
     case bitfinex     = 3
     case kraken       = 4
     case kucoin       = 5
+    case hitbtc       = 6
+    case binance      = 7
     
     // Fiat
     case fixer        = 10001
     
     public var url: URL {
         switch self {
+        // Crypto
         case .coinbaseGdax:
             return URL(string: "https://api.coinbase.com/v2/prices/usd/spot")!
         case .poloniex:
@@ -32,6 +35,12 @@ public enum ExchangeRateSource: Int {
             return URL(string: "https://api.kraken.com/0/public/Ticker?pair=BCHUSD,DASHUSD,XETCZUSD,XETHZUSD,XLTCZUSD,XXBTZUSD,XXMRZUSD,XXRPZUSD,XZECZUSD,EOSXBT,GNOXBT,XICNXXBT,XMLNXXBT,XREPXXBT,XXDGXXBT,XXLMXXBT,XXMRXXBT")!
         case .kucoin:
             return URL(string: "https://api.kucoin.com/v1/open/tick")!
+        case .hitbtc:
+            return URL(string: "https://api.hitbtc.com/api/2/public/ticker")!
+        case .binance:
+            return URL(string: "https://api.binance.com/api/v1/ticker/allPrices")!
+        
+        // Fiat
         case .fixer:
             return URL(string: "http://api.fixer.io/latest?base=USD")!
         }

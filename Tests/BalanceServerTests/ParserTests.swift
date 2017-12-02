@@ -43,6 +43,18 @@ public class ParserTests: XCTestCase {
                 ("testKucoinParsingNumberOfObjects", testKucoinParsingNumberOfObjects),
                 ("testKucoinParsingObjectProperties", testKucoinParsingObjectProperties),
                 
+                ("testHitbtcParsingDoesntGiveError", testHitbtcParsingDoesntGiveError),
+                ("testHitbtcParsingThrowsErrorOnEmptyData", testHitbtcParsingThrowsErrorOnEmptyData),
+                ("testHitbtcParsingThrowsErrorOnWrongData", testHitbtcParsingThrowsErrorOnWrongData),
+                ("testHitbtcParsingNumberOfObjects", testHitbtcParsingNumberOfObjects),
+                ("testHitbtcParsingObjectProperties", testHitbtcParsingObjectProperties),
+                
+                ("testBinanceParsingDoesntGiveError", testBinanceParsingDoesntGiveError),
+                ("testBinanceParsingThrowsErrorOnEmptyData", testBinanceParsingThrowsErrorOnEmptyData),
+                ("testBinanceParsingThrowsErrorOnWrongData", testBinanceParsingThrowsErrorOnWrongData),
+                ("testBinanceParsingNumberOfObjects", testBinanceParsingNumberOfObjects),
+                ("testBinanceParsingObjectProperties", testBinanceParsingObjectProperties),
+                
                 ("testFixerParsingDoesntGiveError", testFixerParsingDoesntGiveError),
                 ("testFixerParsingThrowsErrorOnEmptyData", testFixerParsingThrowsErrorOnEmptyData),
                 ("testFixerParsingThrowsErrorOnWrongData", testFixerParsingThrowsErrorOnWrongData),
@@ -61,7 +73,7 @@ public class ParserTests: XCTestCase {
         let poloniexData = TestHelpers.poloniexData
         
         //when
-        let (_,error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
+        let (_, error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
         
         //then
         XCTAssertNil(error)
@@ -72,10 +84,10 @@ public class ParserTests: XCTestCase {
         let poloniexData = TestHelpers.emptyData
         
         //when
-        let (_,error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
+        let (_, error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testPoloniexParsingThrowsErrorOnWrongData() {
@@ -83,10 +95,10 @@ public class ParserTests: XCTestCase {
         let poloniexData = TestHelpers.wrongData
         
         //when
-        let (_,error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
+        let (_, error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testPoloniexParsingNumberOfObjects() {
@@ -94,10 +106,11 @@ public class ParserTests: XCTestCase {
         let poloniexData = TestHelpers.poloniexData
         
         //when
-        let (exchangeRates,error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
+        let (exchangeRates, error) = ExchangeRateParsing.poloniex(responseData: poloniexData)
         
         //then
-        XCTAssertEqual(exchangeRates.count, 101,(error?.errorDescription)!)
+        XCTAssertNil(error, error!.errorDescription)
+        XCTAssertEqual(exchangeRates.count, 101)
     }
     
     public func testPoloniexParsingObjectProperties() {
@@ -105,14 +118,14 @@ public class ParserTests: XCTestCase {
         let poloniexData = TestHelpers.poloniexSimpleData
         
         //when
-        let (exchangeRates,_) = ExchangeRateParsing.poloniex(responseData: poloniexData)
+        let (exchangeRates, _) = ExchangeRateParsing.poloniex(responseData: poloniexData)
         let exchangeRate = exchangeRates.first!
         
         //then
         XCTAssertEqual(exchangeRate.source, ExchangeRateSource.poloniex)
-        XCTAssertEqual(exchangeRate.to, Currency.crypto(enum: .btc))
         XCTAssertEqual(exchangeRate.from, Currency.cryptoOther(code: "BCN"))
-        XCTAssertEqual(exchangeRate.rate, 0.00000032) 
+        XCTAssertEqual(exchangeRate.to, Currency.crypto(enum: .btc))
+        XCTAssertEqual(exchangeRate.rate, 0.00000032)
     }
     
     public func testBitfinexxParsingDoesntGiveError() {
@@ -120,7 +133,7 @@ public class ParserTests: XCTestCase {
         let bitfinexData = TestHelpers.bitfinexData
         
         //when
-        let (_,error) = ExchangeRateParsing.bitfinex(responseData: bitfinexData)
+        let (_, error) = ExchangeRateParsing.bitfinex(responseData: bitfinexData)
         
         //then
         XCTAssertNil(error)
@@ -131,10 +144,10 @@ public class ParserTests: XCTestCase {
         let emptyData = TestHelpers.emptyData
         
         //when
-        let (_,error) = ExchangeRateParsing.bitfinex(responseData: emptyData)
+        let (_, error) = ExchangeRateParsing.bitfinex(responseData: emptyData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testBitfinexParsingThrowsErrorOnWrongData() {
@@ -142,10 +155,10 @@ public class ParserTests: XCTestCase {
         let wrongData = TestHelpers.wrongData
         
         //when
-        let (_,error) = ExchangeRateParsing.bitfinex(responseData: wrongData)
+        let (_, error) = ExchangeRateParsing.bitfinex(responseData: wrongData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testBitfinexParsingNumberOfObjects() {
@@ -153,10 +166,11 @@ public class ParserTests: XCTestCase {
         let bitfinexData = TestHelpers.bitfinexData
         
         //when
-        let (exchangeRates,error) = ExchangeRateParsing.bitfinex(responseData: bitfinexData)
+        let (exchangeRates, error) = ExchangeRateParsing.bitfinex(responseData: bitfinexData)
         
         //then
-        XCTAssertEqual(exchangeRates.count, 15,(error?.errorDescription)!)
+        XCTAssertNil(error, error!.errorDescription)
+        XCTAssertEqual(exchangeRates.count, 15)
     }
     
     public func testBitfinexParsingObjectProperties() {
@@ -164,13 +178,13 @@ public class ParserTests: XCTestCase {
         let bitfinexData = TestHelpers.bitfinexSimpleData
         
         //when
-        let (exchangeRates,_) = ExchangeRateParsing.bitfinex(responseData: bitfinexData)
+        let (exchangeRates, _) = ExchangeRateParsing.bitfinex(responseData: bitfinexData)
         let exchangeRate = exchangeRates.first!
         
         //then
         XCTAssertEqual(exchangeRate.source, ExchangeRateSource.bitfinex)
-        XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum: .btc))
+        XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.rate, 4187.1)
     }
     
@@ -179,7 +193,7 @@ public class ParserTests: XCTestCase {
         let coinbaseData = TestHelpers.coinbaseData
         
         //when
-        let (_,error) = ExchangeRateParsing.coinbaseGdax(responseData: coinbaseData)
+        let (_, error) = ExchangeRateParsing.coinbaseGdax(responseData: coinbaseData)
         
         //then
         XCTAssertNil(error)
@@ -190,10 +204,10 @@ public class ParserTests: XCTestCase {
         let emptyData = TestHelpers.emptyData
         
         //when
-        let (_,error) = ExchangeRateParsing.coinbaseGdax(responseData: emptyData)
+        let (_, error) = ExchangeRateParsing.coinbaseGdax(responseData: emptyData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testCoinbaseParsingThrowsErrorOnWrongData() {
@@ -201,10 +215,10 @@ public class ParserTests: XCTestCase {
         let wrongData = TestHelpers.wrongData
         
         //when
-        let (_,error) = ExchangeRateParsing.coinbaseGdax(responseData: wrongData)
+        let (_, error) = ExchangeRateParsing.coinbaseGdax(responseData: wrongData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testCoinbaseParsingNumberOfObjects() {
@@ -212,10 +226,11 @@ public class ParserTests: XCTestCase {
         let coinbaseData = TestHelpers.coinbaseData
         
         //when
-        let (exchangeRates,error) = ExchangeRateParsing.coinbaseGdax(responseData: coinbaseData)
+        let (exchangeRates, error) = ExchangeRateParsing.coinbaseGdax(responseData: coinbaseData)
         
         //then
-        XCTAssertEqual(exchangeRates.count, 3,(error?.errorDescription)!)
+        XCTAssertNil(error, error!.localizedDescription)
+        XCTAssertEqual(exchangeRates.count, 3)
     }
     
     public func testCoinbaseParsingObjectProperties() {
@@ -223,13 +238,13 @@ public class ParserTests: XCTestCase {
         let coinbaseData = TestHelpers.coinbaseSimpleData
         
         //when
-        let (exchangeRates,_) = ExchangeRateParsing.coinbaseGdax(responseData: coinbaseData)
+        let (exchangeRates, _) = ExchangeRateParsing.coinbaseGdax(responseData: coinbaseData)
         let exchangeRate = exchangeRates.first!
         
         //then
         XCTAssertEqual(exchangeRate.source, ExchangeRateSource.coinbaseGdax)
-        XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum: .btc))
+        XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.rate, 4167.99)
     }
     
@@ -238,7 +253,7 @@ public class ParserTests: XCTestCase {
         let krakenData = TestHelpers.krakenData
         
         //when
-        let (_,error) = ExchangeRateParsing.kraken(responseData: krakenData)
+        let (_, error) = ExchangeRateParsing.kraken(responseData: krakenData)
         
         //then
         XCTAssertNil(error)
@@ -249,10 +264,10 @@ public class ParserTests: XCTestCase {
         let emptyData = TestHelpers.emptyData
         
         //when
-        let (_,error) = ExchangeRateParsing.kraken(responseData: emptyData)
+        let (_, error) = ExchangeRateParsing.kraken(responseData: emptyData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testKrakenParsingThrowsErrorOnWrongData() {
@@ -260,10 +275,10 @@ public class ParserTests: XCTestCase {
         let wrongData = TestHelpers.wrongData
         
         //when
-        let (_,error) = ExchangeRateParsing.kraken(responseData: wrongData)
+        let (_, error) = ExchangeRateParsing.kraken(responseData: wrongData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testKrakenParsingNumberOfObjects() {
@@ -271,10 +286,11 @@ public class ParserTests: XCTestCase {
         let krakenData = TestHelpers.krakenData
         
         //when
-        let (exchangeRates,error) = ExchangeRateParsing.kraken(responseData: krakenData)
+        let (exchangeRates, error) = ExchangeRateParsing.kraken(responseData: krakenData)
         
         //then
-        XCTAssertEqual(exchangeRates.count, 17,(error?.errorDescription)!)
+        XCTAssertNil(error, error!.localizedDescription)
+        XCTAssertEqual(exchangeRates.count, 17)
     }
     
     public func testKrakenParsingObjectProperties() {
@@ -282,13 +298,13 @@ public class ParserTests: XCTestCase {
         let krakenData = TestHelpers.krakenSimpleData
         
         //when
-        let (exchangeRates,_) = ExchangeRateParsing.kraken(responseData: krakenData)
+        let (exchangeRates, _) = ExchangeRateParsing.kraken(responseData: krakenData)
         let exchangeRate = exchangeRates.first!
         
         //then
         XCTAssertEqual(exchangeRate.source, ExchangeRateSource.kraken)
-        XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum:.bch))
+        XCTAssertEqual(exchangeRate.to, Currency.usd)
         XCTAssertEqual(exchangeRate.rate, 441.7)
     }
     
@@ -297,7 +313,7 @@ public class ParserTests: XCTestCase {
         let kucoinData = TestHelpers.kucoinData
         
         //when
-        let (_,error) = ExchangeRateParsing.kucoin(responseData: kucoinData)
+        let (_, error) = ExchangeRateParsing.kucoin(responseData: kucoinData)
         
         //then
         XCTAssertNil(error)
@@ -308,10 +324,10 @@ public class ParserTests: XCTestCase {
         let emptyData = TestHelpers.emptyData
         
         //when
-        let (_,error) = ExchangeRateParsing.kucoin(responseData: emptyData)
+        let (_, error) = ExchangeRateParsing.kucoin(responseData: emptyData)
         
         //then
-        XCTAssertNotNil(error, (error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testKucoinParsingThrowsErrorOnWrongData() {
@@ -319,10 +335,10 @@ public class ParserTests: XCTestCase {
         let wrongData = TestHelpers.wrongData
         
         //when
-        let (_,error) = ExchangeRateParsing.kucoin(responseData: wrongData)
+        let (_, error) = ExchangeRateParsing.kucoin(responseData: wrongData)
         
         //then
-        XCTAssertNotNil(error, (error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testKucoinParsingNumberOfObjects() {
@@ -330,10 +346,11 @@ public class ParserTests: XCTestCase {
         let krakenData = TestHelpers.kucoinData
         
         //when
-        let (exchangeRates,error) = ExchangeRateParsing.kucoin(responseData: krakenData)
+        let (exchangeRates, error) = ExchangeRateParsing.kucoin(responseData: krakenData)
         
         //then
-        XCTAssertEqual(exchangeRates.count, 52, (error?.errorDescription)!)
+        XCTAssertNil(error, error!.errorDescription)
+        XCTAssertEqual(exchangeRates.count, 52)
     }
     
     public func testKucoinParsingObjectProperties() {
@@ -341,14 +358,134 @@ public class ParserTests: XCTestCase {
         let krakenData = TestHelpers.kucoinSimpleData
         
         //when
-        let (exchangeRates,_) = ExchangeRateParsing.kucoin(responseData: krakenData)
+        let (exchangeRates, _) = ExchangeRateParsing.kucoin(responseData: krakenData)
         let exchangeRate = exchangeRates.first!
         
         //then
         XCTAssertEqual(exchangeRate.source, ExchangeRateSource.kucoin)
-        XCTAssertEqual(exchangeRate.to, Currency.btc)
         XCTAssertEqual(exchangeRate.from, Currency.rawValue("KCS"))
+        XCTAssertEqual(exchangeRate.to, Currency.btc)
         XCTAssertEqual(exchangeRate.rate, 9.1370000000000001e-05)
+    }
+    
+    public func testHitbtcParsingDoesntGiveError() {
+        //given
+        let hitbtcData = TestHelpers.hitbtcData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.hitbtc(responseData: hitbtcData)
+        
+        //then
+        XCTAssertNil(error)
+    }
+    
+    public func testHitbtcParsingThrowsErrorOnEmptyData() {
+        //given
+        let emptyData = TestHelpers.emptyData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.hitbtc(responseData: emptyData)
+        
+        //then
+        XCTAssertNotNil(error)
+    }
+    
+    public func testHitbtcParsingThrowsErrorOnWrongData() {
+        //given
+        let wrongData = TestHelpers.wrongData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.hitbtc(responseData: wrongData)
+        
+        //then
+        XCTAssertNotNil(error)
+    }
+    
+    public func testHitbtcParsingNumberOfObjects() {
+        //given
+        let hitbtcData = TestHelpers.hitbtcData
+        
+        //when
+        let (exchangeRates, error) = ExchangeRateParsing.hitbtc(responseData: hitbtcData)
+        
+        //then
+        XCTAssertNil(error, error!.localizedDescription)
+        XCTAssertEqual(exchangeRates.count, 370)
+    }
+    
+    public func testHitbtcParsingObjectProperties() {
+        //given
+        let hitbtcData = TestHelpers.hitbtcSimpleData
+        
+        //when
+        let (exchangeRates, _) = ExchangeRateParsing.hitbtc(responseData: hitbtcData)
+        let exchangeRate = exchangeRates.first!
+        
+        //then
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.hitbtc)
+        XCTAssertEqual(exchangeRate.from, Currency.btc)
+        XCTAssertEqual(exchangeRate.to, Currency.usd)
+        XCTAssertEqual(exchangeRate.rate, 10669.74)
+    }
+    
+    public func testBinanceParsingDoesntGiveError() {
+        //given
+        let binanceData = TestHelpers.binanceData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.binance(responseData: binanceData)
+        
+        //then
+        XCTAssertNil(error)
+    }
+    
+    public func testBinanceParsingThrowsErrorOnEmptyData() {
+        //given
+        let emptyData = TestHelpers.emptyData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.binance(responseData: emptyData)
+        
+        //then
+        XCTAssertNotNil(error)
+    }
+    
+    public func testBinanceParsingThrowsErrorOnWrongData() {
+        //given
+        let wrongData = TestHelpers.wrongData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.binance(responseData: wrongData)
+        
+        //then
+        XCTAssertNotNil(error)
+    }
+    
+    public func testBinanceParsingNumberOfObjects() {
+        //given
+        let binanceData = TestHelpers.binanceData
+        
+        //when
+        let (exchangeRates, error) = ExchangeRateParsing.binance(responseData: binanceData)
+        
+        //then
+        XCTAssertNil(error, error!.errorDescription)
+        XCTAssertEqual(exchangeRates.count, 176)
+    }
+    
+    public func testBinanceParsingObjectProperties() {
+        //given
+        let binanceData = TestHelpers.binanceSimpleData
+        
+        //when
+        let (exchangeRates, _) = ExchangeRateParsing.binance(responseData: binanceData)
+        let exchangeRate = exchangeRates.first!
+        
+        //then
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.binance)
+        XCTAssertEqual(exchangeRate.from, Currency.eth)
+        XCTAssertEqual(exchangeRate.to, Currency.btc)
+        XCTAssertEqual(exchangeRate.rate, 0.042555)
     }
 
     public func testFixerParsingDoesntGiveError() {
@@ -356,7 +493,7 @@ public class ParserTests: XCTestCase {
         let fixerData = TestHelpers.fixerData
         
         //when
-        let (_,error) = ExchangeRateParsing.fixer(responseData: fixerData)
+        let (_, error) = ExchangeRateParsing.fixer(responseData: fixerData)
         
         //then
         XCTAssertNil(error)
@@ -367,10 +504,10 @@ public class ParserTests: XCTestCase {
         let emptyData = TestHelpers.emptyData
         
         //when
-        let (_,error) = ExchangeRateParsing.fixer(responseData: emptyData)
+        let (_, error) = ExchangeRateParsing.fixer(responseData: emptyData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testFixerParsingThrowsErrorOnWrongData() {
@@ -378,10 +515,10 @@ public class ParserTests: XCTestCase {
         let wrongData = TestHelpers.wrongData
         
         //when
-        let (_,error) = ExchangeRateParsing.fixer(responseData: wrongData)
+        let (_, error) = ExchangeRateParsing.fixer(responseData: wrongData)
         
         //then
-        XCTAssertNotNil(error,(error?.errorDescription)!)
+        XCTAssertNotNil(error)
     }
     
     public func testFixerParsingNumberOfObjects() {
@@ -389,10 +526,11 @@ public class ParserTests: XCTestCase {
         let fixerData = TestHelpers.fixerData
         
         //when
-        let (exchangeRates,error) = ExchangeRateParsing.fixer(responseData: fixerData)
+        let (exchangeRates, error) = ExchangeRateParsing.fixer(responseData: fixerData)
         
         //then
-        XCTAssertEqual(exchangeRates.count, 31,(error?.errorDescription)!)
+        XCTAssertNil(error, error!.errorDescription)
+        XCTAssertEqual(exchangeRates.count, 31)
     }
     
     public func testFixerParsingObjectProperties() {
@@ -400,13 +538,13 @@ public class ParserTests: XCTestCase {
         let fixerData = TestHelpers.fixerSimpleData
         
         //when
-        let (exchangeRates,_) = ExchangeRateParsing.fixer(responseData: fixerData)
+        let (exchangeRates, _) = ExchangeRateParsing.fixer(responseData: fixerData)
         let exchangeRate = exchangeRates.first!
         
         //then
         XCTAssertEqual(exchangeRate.source, ExchangeRateSource.fixer)
-        XCTAssertEqual(exchangeRate.to, Currency.gbp)
         XCTAssertEqual(exchangeRate.from, Currency.usd)
+        XCTAssertEqual(exchangeRate.to, Currency.gbp)
         XCTAssertEqual(exchangeRate.rate, 0.74406)
     }
 }

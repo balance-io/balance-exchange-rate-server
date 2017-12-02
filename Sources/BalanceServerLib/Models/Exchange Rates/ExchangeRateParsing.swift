@@ -204,6 +204,91 @@ public struct ExchangeRateParsing {
         return (exchangeRates, nil)
     }
     
+    public static func hitbtc(responseData: Data) -> ([ExchangeRate], BalanceError?) {
+        let responseString = String(data: responseData, encoding: .utf8)
+        
+        // Verify the response is correct
+        guard let bodyOptional = try? responseString?.jsonDecode() as? [[String: Any]], let body = bodyOptional else {
+            return ([], .jsonDecoding)
+        }
+        
+        // Check for success
+        guard body.count > 0 else {
+            Log.error(message: "Did not return any prices")
+            return ([], .jsonDecoding)
+        }
+        
+        // Parse the exchange rates
+        var exchangeRates = [ExchangeRate]()
+        for rateDict in body {
+            // Sometimes the rate is not actually set yet, so continue rather than returning an error here
+            guard let lastString = rateDict["last"] as? String, let last = Double(lastString), let symbol = rateDict["symbol"] as? String else {
+                continue
+            }
+            
+            guard symbol.count > 3 else {
+                continue
+            }
+            
+            // Parse currency
+            let possibleToCurrencyCodes = ["USD", "BTC", "ETH"]
+            let toCode = symbol.substring(with: Range(symbol.count - 3..<symbol.count))
+            guard possibleToCurrencyCodes.contains(toCode) else {
+                continue
+            }
+            
+            let fromCode = symbol.substring(with: Range(0..<symbol.count - 3))
+            let fromCurrency = Currency.rawValue(fromCode)
+            let toCurrency = Currency.rawValue(toCode)
+            let exchangeRate = ExchangeRate(source: .hitbtc, from: fromCurrency, to: toCurrency, rate: last)
+            exchangeRates.append(exchangeRate)
+        }
+        
+        return (exchangeRates, nil)
+    }
+    
+    public static func binance(responseData: Data) -> ([ExchangeRate], BalanceError?) {
+        let responseString = String(data: responseData, encoding: .utf8)
+        
+        // Verify the response is correct
+        guard let bodyOptional = try? responseString?.jsonDecode() as? [[String: Any]], let body = bodyOptional else {
+            return ([], .jsonDecoding)
+        }
+        
+        // Check for success
+        guard body.count > 0 else {
+            Log.error(message: "Did not return any prices")
+            return ([], .jsonDecoding)
+        }
+        
+        // Parse the exchange rates
+        var exchangeRates = [ExchangeRate]()
+        for rateDict in body {
+            guard let priceString = rateDict["price"] as? String, let price = Double(priceString), let symbol = rateDict["symbol"] as? String else {
+                return ([], .jsonDecoding)
+            }
+            
+            guard symbol.count > 3 else {
+                continue
+            }
+            
+            // Parse currency (ignoring USDT prices)
+            let possibleToCurrencyCodes = ["BTC", "ETH", "BNB"]
+            let toCode = symbol.substring(with: Range(symbol.count - 3..<symbol.count))
+            guard possibleToCurrencyCodes.contains(toCode) else {
+                continue
+            }
+            
+            let fromCode = symbol.substring(with: Range(0..<symbol.count - 3))
+            let fromCurrency = Currency.rawValue(fromCode)
+            let toCurrency = Currency.rawValue(toCode)
+            let exchangeRate = ExchangeRate(source: .binance, from: fromCurrency, to: toCurrency, rate: price)
+            exchangeRates.append(exchangeRate)
+        }
+        
+        return (exchangeRates, nil)
+    }
+    
     public static func fixer(responseData: Data) -> ([ExchangeRate], BalanceError?) {
         let responseString = String(data: responseData, encoding: .utf8)
         

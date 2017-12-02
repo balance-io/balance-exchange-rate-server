@@ -24,7 +24,7 @@ public enum BalanceError: Int, LocalizedError {
     case noData              = 12
     case noReceipt           = 13
     
-    public var errorDescription: String? {
+    public var errorDescription: String {
         switch self {
         case .success:             return "Success"
         case .invalidReceipt:      return "Invalid receipt"
