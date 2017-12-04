@@ -19,7 +19,6 @@ public struct CoinbaseHandlers {
     public static func requestTokenHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
             // Generate the request data
-            Log.error(message:"Request \(request.postBodyString!)")
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?] else {
                 Log.error(message: "requestTokenHandler: Invalid incoming post data")
                 sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
@@ -54,7 +53,6 @@ public struct CoinbaseHandlers {
     public static func refreshTokenHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
             // Generate the request data -> uni test
-            Log.error(message:"Request \(String(describing: request.postBodyString))")
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
                   let refreshToken = params?["refreshToken"] as? String,
                   let postJsonData = preparePostData(refreshToken: refreshToken) else {
@@ -117,7 +115,6 @@ public struct CoinbaseHandlers {
             }
             
             let responseString = String(data: data, encoding: .utf8)
-            Log.error(message: "getAccessToken coinbase response: \(String(describing: responseString))")
             if let bodyOptional = try? responseString?.jsonDecode() as? [String: Any?], let body = bodyOptional {
                 // Perform full Coinbase error handling
                 if body["error"] != nil {
