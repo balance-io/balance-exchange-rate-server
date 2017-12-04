@@ -197,7 +197,7 @@ struct ExchangeRates {
             let promise = Promise<Bool> { p in
                 ExchangeRates.updateRatesForExchange(source: source, startTime: startTime, session: session) { balError in
                     if let balError = balError {
-                        print("Error updating exchange rates for \(source): \(balError)")
+                        Log.error(message: "Error updating exchange rates for \(source): \(balError)")
                     }
                     p.set(true)
                 }
@@ -206,7 +206,7 @@ struct ExchangeRates {
             do {
                 _ = try promise.wait(seconds: 5.0)
             } catch {
-                print("Error updating exchange rates for \(source): \(error)")
+                Log.error(message: "Took longer than 5 seconds to update exchange rates for \(source): \(error)")
             }
         }
     }
@@ -219,7 +219,7 @@ struct ExchangeRates {
         
         let task = session.dataTask(with: source.request) { data, response, error in
             guard error == nil, let data = data else {
-                print("updateExchangeRates for \(source): network error received or data is nil error: \(String(describing: error))")
+                Log.error(message: "updateExchangeRates for \(source): network error received or data is nil error: \(String(describing: error))")
                 completion(.networkError)
                 return
             }
