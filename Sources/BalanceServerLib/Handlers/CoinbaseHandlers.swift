@@ -111,7 +111,7 @@ public struct CoinbaseHandlers {
                 // Perform full Coinbase error handling
                 if body["error"] != nil {
                     Log.error(message: "coinbase error response: \(body)")
-                    completion([String: Any?](), .networkError)
+                    completion([String: Any?](), .unexpectedData)
                 } else {
                     var dict = [String: Any?]()
                     dict["accessToken"] = body["access_token"]
