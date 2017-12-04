@@ -31,7 +31,7 @@ public struct CoinbaseHandlers {
             }
             guard let postJsonData = preparePostData(code: code) else {
                 Log.error(message: "requestTokenHandler: Invalid preparation of post data")
-                sendErrorJsonResponse(error: BalanceError.noData, response: response)
+                sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
                 return
             }
             // Get the access token from Coinbase
