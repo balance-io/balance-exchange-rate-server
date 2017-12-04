@@ -19,14 +19,22 @@ public struct CoinbaseHandlers {
     public static func requestTokenHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
             // Generate the request data
-            guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
-                let code = params?["code"] as? String,
-                let postJsonData = preparePostData(code: code) else {
-                    Log.error(message: "requestTokenHandler: Invalid input data")
-                    sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
-                    return
+            Log.error(message:"Request \(request.postBodyString!)")
+            guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?] else {
+                Log.error(message: "requestTokenHandler: Invalid incoming post data")
+                sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
+                return
             }
-            
+            guard let code = params?["code"] as? String else {
+                Log.error(message: "requestTokenHandler: Invalid code")
+                sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
+                return
+            }
+            guard let postJsonData = preparePostData(code: code) else {
+                Log.error(message: "requestTokenHandler: Invalid preparation of post data")
+                sendErrorJsonResponse(error: BalanceError.noData, response: response)
+                return
+            }
             // Get the access token from Coinbase
             getAccessToken(postData: postJsonData, completion: { responseDict, error in
                 if let error = error {
@@ -41,9 +49,12 @@ public struct CoinbaseHandlers {
         }
     }
     
+    
+    
     public static func refreshTokenHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
-            // Generate the request data
+            // Generate the request data -> uni test
+            Log.error(message:"Request \(String(describing: request.postBodyString))")
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
                   let refreshToken = params?["refreshToken"] as? String,
                   let postJsonData = preparePostData(refreshToken: refreshToken) else {
@@ -55,7 +66,7 @@ public struct CoinbaseHandlers {
             // Get the access token from Coinbase
             getAccessToken(postData: postJsonData, completion: { responseDict, error in
                 if let error = error {
-                    Log.error(message: "\(String(describing: error))")
+                    Log.error(message: "Access Token coinbase error:\(String(describing: error))")
                     sendErrorJsonResponse(error: error, response: response)
                     return
                 }
