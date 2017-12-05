@@ -78,7 +78,7 @@ public enum ExchangeRateSource: Int {
     }
     
     public static var allCrypto: [ExchangeRateSource] {
-        return [.coinbaseGdax, .poloniex, .bitfinex, .kraken, .kucoin]
+        return [.coinbaseGdax, .poloniex, .bitfinex, .kraken, .kucoin, .hitbtc, .binance]
     }
     
     public static var allFiat: [ExchangeRateSource] {
