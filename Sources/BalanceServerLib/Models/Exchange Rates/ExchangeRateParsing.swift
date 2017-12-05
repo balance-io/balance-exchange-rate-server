@@ -15,6 +15,8 @@ public struct ExchangeRateParsing {
                                                                              .bitfinex:     bitfinex,
                                                                              .kraken:       kraken,
                                                                              .kucoin:       kucoin,
+                                                                             .hitbtc:       hitbtc,
+                                                                             .binance:      binance,
                                                                              .fixer:        fixer]
     
     public static func function(forSource source: ExchangeRateSource) -> ParseFunction? {
