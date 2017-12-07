@@ -49,7 +49,7 @@ public enum ExchangeRateSource: Int {
     public var headers: [String: String] {
         switch self {
         case .coinbaseGdax:
-            return ["CB-VERSION": "2017-06-14"]
+            return ["CB-VERSION": "2017-05-19"]
         default:
             return [:]
         }
