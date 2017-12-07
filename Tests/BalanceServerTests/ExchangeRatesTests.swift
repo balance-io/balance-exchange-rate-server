@@ -26,20 +26,12 @@ public class ExchangeRatesTests: XCTestCase {
                 ("testConvertCryptoRDNtoUSDinKucoin", testConvertCryptoRDNtoUSDinKucoin)]
     }
     
-    internal var mockSession: MockSession!
+    private let mockSession = MockSession()
     
     override public func setUp() {
         super.setUp()
-        mockSession = MockSession()
-
         ExchangeRateTable.rotate()
         loadExhangeInfo()
-    }
-    
-    override public func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-        mockSession = nil
     }
     
     public func testConvert() {
@@ -173,7 +165,7 @@ public class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
-    public func loadExhangeInfo() {
+    private func loadExhangeInfo() {
         let bitfinexData = TestHelpers.bitfinexData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "bitfinex", data: bitfinexData, statusCode: 200, headers: nil))
         
