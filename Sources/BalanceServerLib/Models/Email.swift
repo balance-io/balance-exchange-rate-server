@@ -14,12 +14,12 @@ public struct Email {
         return parametersArray.joined(separator: "&")
     }
     
-    public static func send(from: String, to: String, subject: String, body: String, session: DataSession = sharedSession, completion: @escaping (BalanceError?) -> Void) {
+    public static func send(from: String, to: String, subject: String, body: String, urlString: String = Config.Mailgun.url, session: DataSession = sharedSession, completion: @escaping (BalanceError?) -> Void) {
         let parameters: [String: String] = ["from": from, "to": to, "subject": subject, "text": body]
         let postString = encodePostParameters(parameters)
         let postData = postString.data(using: .utf8, allowLossyConversion: true)
         
-        let url = URL(string: Config.Mailgun.url)!
+        let url = URL(string: urlString)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = postData
