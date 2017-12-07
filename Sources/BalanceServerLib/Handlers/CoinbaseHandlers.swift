@@ -84,26 +84,26 @@ public struct CoinbaseHandlers {
         }
         
         // Prepare the data
-        var postData: [String: Any] = ["client_id": Config.Coinbase.clientId, "client_secret": Config.Coinbase.clientSecret]
+        var postDataDict: [String: String] = ["client_id": Config.Coinbase.clientId, "client_secret": Config.Coinbase.clientSecret]
         if let code = code {
-            postData["grant_type"] = "authorization_code"
-            postData["code"] = code
-            postData["redirect_uri"] = "balancemymoney://coinbase"
+            postDataDict["grant_type"] = "authorization_code"
+            postDataDict["code"] = code
+            postDataDict["redirect_uri"] = "balancemymoney://coinbase"
         } else if let refreshToken = refreshToken {
-            postData["grant_type"] = "refresh_token"
-            postData["refresh_token"] = refreshToken
+            postDataDict["grant_type"] = "refresh_token"
+            postDataDict["refresh_token"] = refreshToken
         }
-        
-        // Convert to JSON
-        let postJsonData = try? postData.jsonEncodedString()
-        return postJsonData?.data(using: .utf8)
+
+        // Convert to post form data
+        let postDataString = encodePostParameters(postDataDict)
+        let postData = postDataString.data(using: .utf8)
+        return postData
     }
     
     // Gets the access token from the Coinbase API
     fileprivate static func getAccessToken(postData: Data, session: DataSession = sharedSession, completion: @escaping ([String: Any?], BalanceError?) -> Void) {
         let url = URL(string: "https://api.coinbase.com/oauth/token")!
         var request = URLRequest(url: url)
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         request.httpBody = postData
         
