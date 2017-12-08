@@ -170,7 +170,7 @@ public class ParserTests: XCTestCase {
         
         //then
         XCTAssertNil(error, error!.errorDescription)
-        XCTAssertEqual(exchangeRates.count, 15)
+        XCTAssertEqual(exchangeRates.count, 67)
     }
     
     public func testBitfinexParsingObjectProperties() {
