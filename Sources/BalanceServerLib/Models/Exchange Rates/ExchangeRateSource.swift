@@ -29,7 +29,7 @@ public enum ExchangeRateSource: Int {
             return URL(string: "https://poloniex.com/public?command=returnTicker")!
         case .bitfinex:
             // TODO: Call https://api.bitfinex.com/v1/symbols API to get the current symbols\instead of updating manually
-            return URL(string: "https://api.bitfinex.com/v2/tickers?symbols=tBTCUSD,tETHUSD,tLTCUSD,tOMGUSD,tBCHUSD,tIOTAUSD,tETCUSD,tXMRUSD,tEOSUSD,tDASHUSD,tNEOUSD,tZECUSD,tXRPUSD,tSANUSD,tBCCUSD,tRRTUSD,tBCUUSD")!
+            return URL(string: "https://api.bitfinex.com/v2/tickers?symbols=tBTCUSD,tLTCUSD,tLTCBTC,tETHUSD,tETHBTC,tETCBTC,tETCUSD,tRRTUSD,tRRTBTC,tZECUSD,tZECBTC,tXMRUSD,tXMRBTC,tDSHUSD,tDSHBTC,tBCCBTC,tBCUBTC,tBCCUSD,tBCUUSD,tBTCEUR,tXRPUSD,tXRPBTC,tIOTUSD,tIOTBTC,tIOTETH,tEOSUSD,tEOSBTC,tEOSETH,tSANUSD,tSANBTC,tSANETH,tOMGUSD,tOMGBTC,tOMGETH,tBCHUSD,tBCHBTC,tBCHETH,tNEOUSD,tNEOBTC,tNEOETH,tETPUSD,tETPBTC,tETPETH,tQTMUSD,tQTMBTC,tQTMETH,tBT1USD,tBT2USD,tBT1BTC,tBT2BTC,tAVTUSD,tAVTBTC,tAVTETH,tEDOUSD,tEDOBTC,tEDOETH,tBTGUSD,tBTGBTC,tDATUSD,tDATBTC,tDATETH,tQSHUSD,tQSHBTC,tQSHETH,tYYWUSD,tYYWBTC,tYYWETH")!
         case .kraken:
             // TODO: Call https://api.kraken.com/0/public/AssetPairs API to get the current asset pairs instead of updating manually
             return URL(string: "https://api.kraken.com/0/public/Ticker?pair=BCHUSD,DASHUSD,XETCZUSD,XETHZUSD,XLTCZUSD,XXBTZUSD,XXMRZUSD,XXRPZUSD,XZECZUSD,EOSXBT,GNOXBT,XICNXXBT,XMLNXXBT,XREPXXBT,XXDGXXBT,XXLMXXBT,XXMRXXBT")!
