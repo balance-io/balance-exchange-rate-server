@@ -9,7 +9,7 @@ import Foundation
 import PerfectLib
 
 public struct Email {
-    public static func send(from: String, to: String, subject: String, body: String, attachment: Data?, fileName: String?, mimeType: String?, urlString: String = Config.Mailgun.url, session: DataSession = sharedSession, completion: @escaping (BalanceError?) -> Void) {
+    public static func send(from: String, to: String, subject: String, body: String, attachment: Data? = nil, fileName: String? = nil, mimeType: String? = nil, urlString: String = Config.Mailgun.url, session: DataSession = sharedSession, completion: @escaping (BalanceError?) -> Void) {
         if let attachment = attachment, let fileName = fileName, let mimeType = mimeType {
             sendAttachment(from: from, to: to, subject: subject, body: body, attachment: attachment, fileName: fileName, mimeType: mimeType, urlString: urlString, session: session, completion: completion)
         } else {
