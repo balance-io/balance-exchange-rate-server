@@ -92,8 +92,10 @@ public struct ExchangeRateParsing {
             }
             
             // Parse currency
-            let currencyCode = symbol.substring(with: Range(1..<4))
-            let fromCurrency = Currency.rawValue(currencyCode)
+            let fromCurrencyCode = symbol.substring(with: Range(1..<4))
+            let fromCurrency = Currency.rawValue(fromCurrencyCode)
+            let toCurrencyCode = symbol.substring(from: 4)
+            let toCurrency = Currency.rawValue(toCurrencyCode)
             
             // Parse price as double
             let lastPrice = array[7]
@@ -105,7 +107,7 @@ public struct ExchangeRateParsing {
                 return ([], .unexpectedData)
             }
             
-            let exchangeRate = ExchangeRate(source: .bitfinex, from: fromCurrency, to: .usd, rate: rate)
+            let exchangeRate = ExchangeRate(source: .bitfinex, from: fromCurrency, to: toCurrency, rate: rate)
             exchangeRates.append(exchangeRate)
         }
         
