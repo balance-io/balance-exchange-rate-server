@@ -118,8 +118,14 @@ public struct CoinbaseHandlers {
             if let bodyOptional = try? responseString?.jsonDecode() as? [String: Any?], let body = bodyOptional {
                 // Perform full Coinbase error handling
                 if body["error"] != nil {
-                    Log.error(message: "coinbase error response: \(body)")
-                    completion([String: Any?](), .unexpectedData)
+                    Log.error(message: "coinbase error http status code: \(String(describing: (response as? HTTPURLResponse)?.statusCode)) response: \(body)")
+                    if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
+                        // Status code 401 means invalid token or other auth error
+                        // https://developers.coinbase.com/docs/wallet/error-codes
+                        completion([String: Any?](), .authenticationError)
+                    } else {
+                        completion([String: Any?](), .unexpectedData)
+                    }
                 } else {
                     var dict = [String: Any?]()
                     dict["accessToken"] = body["access_token"]
