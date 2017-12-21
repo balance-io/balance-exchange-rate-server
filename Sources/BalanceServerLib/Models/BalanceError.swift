@@ -24,6 +24,7 @@ public enum BalanceError: Int, LocalizedError {
     case noData              = 12
     case noReceipt           = 13
     case unexpectedData      = 14
+    case authenticationError = 15
     
     public var errorDescription: String {
         switch self {
@@ -42,6 +43,7 @@ public enum BalanceError: Int, LocalizedError {
         case .noData:              return "No data"
         case .noReceipt:           return "No app store receipt"
         case .unexpectedData:      return "Unexpected data"
+        case .authenticationError: return "Authentication error"
         }
     }
 }
