@@ -11,7 +11,8 @@ import PerfectLib
 import PerfectHTTP
 
 public struct BalanceHandlers {
-    public static let routes = [["method": "get", "uri": "/hello", "handler": helloHandler]]
+    public static let routes = [["method": "get", "uri": "/hello", "handler": helloHandler],
+                                ["method": "post", "uri": "/certReport", "handler": certReportHandler]]
     
     // MARK: - Handlers -
     
@@ -21,6 +22,16 @@ public struct BalanceHandlers {
         return { request, response in
             response.setHeader(.contentType, value: "text/plain; charset=utf-8")
             response.setBody(string: "hello")
+            response.completed()
+        }
+    }
+    
+    // For reporting certificate pinning failures, i.e. attempted MitM attacks
+    public static func certReportHandler(data: [String: Any]) throws -> RequestHandler {
+        return { request, response in
+            response.setHeader(.contentType, value: "text/plain; charset=utf-8")
+            Log.info(message: "Client App Certificate Validation Failed: \(request.postBodyString ?? "no post body")")
+            response.setBody(string: "received")
             response.completed()
         }
     }
