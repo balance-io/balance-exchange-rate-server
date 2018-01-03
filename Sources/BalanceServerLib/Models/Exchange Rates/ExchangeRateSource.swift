@@ -9,11 +9,13 @@ import Foundation
 
 public enum ExchangeRateSource: Int {
     // Crypto
-    case coinbaseGdax = 1
-    case poloniex     = 2
-    case bitfinex     = 3
-    case kraken       = 4
-    case kucoin       = 5
+    case coinbaseGdax    = 1
+    case poloniex        = 2
+    case bitfinex        = 3
+    case kraken          = 4
+    case kucoin          = 5
+    case coinbaseGdaxEur = 6
+    case coinbaseGdaxGbp = 7
     
     // Fiat
     case fixer        = 10001
@@ -34,6 +36,10 @@ public enum ExchangeRateSource: Int {
             return URL(string: "https://api.kucoin.com/v1/open/tick")!
         case .fixer:
             return URL(string: "http://api.fixer.io/latest?base=USD")!
+        case .coinbaseGdaxEur:
+            return URL(string: "https://api.coinbase.com/v2/prices/eur/spot")!
+        case .coinbaseGdaxGbp:
+            return URL(string: "https://api.coinbase.com/v2/prices/gbp/spot")!
         }
     }
     
@@ -69,7 +75,7 @@ public enum ExchangeRateSource: Int {
     }
     
     public static var allCrypto: [ExchangeRateSource] {
-        return [.coinbaseGdax, .poloniex, .bitfinex, .kraken, .kucoin]
+        return [.coinbaseGdax, .coinbaseGdaxEur, .coinbaseGdaxGbp, .poloniex, .bitfinex, .kraken, .kucoin]
     }
     
     public static var allFiat: [ExchangeRateSource] {

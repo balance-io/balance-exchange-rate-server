@@ -11,6 +11,8 @@ import PerfectLib
 public struct ExchangeRateParsing {
     public typealias ParseFunction = (Data) -> ([ExchangeRate], BalanceError?)
     public static let parseFunctions: [ExchangeRateSource: ParseFunction] = [.coinbaseGdax: coinbaseGdax,
+                                                                             .coinbaseGdaxEur: coinbaseGdax,
+                                                                             .coinbaseGdaxGbp: coinbaseGdax,
                                                                              .poloniex:     poloniex,
                                                                              .bitfinex:     bitfinex,
                                                                              .kraken:       kraken,
