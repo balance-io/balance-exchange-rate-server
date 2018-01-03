@@ -54,14 +54,14 @@ public enum ExchangeRateSource: Int {
             return URL(string: "https://api.hitbtc.com/api/2/public/ticker")!
         case .binance:
             return URL(string: "https://api.binance.com/api/v1/ticker/allPrices")!
-        
-        // Fiat
-        case .fixer:
-            return URL(string: "http://api.fixer.io/latest?base=USD")!
         case .coinbaseGdaxEur:
             return URL(string: "https://api.coinbase.com/v2/prices/eur/spot")!
         case .coinbaseGdaxGbp:
             return URL(string: "https://api.coinbase.com/v2/prices/gbp/spot")!
+        
+        // Fiat
+        case .fixer:
+            return URL(string: "http://api.fixer.io/latest?base=USD")!
         }
     }
     
