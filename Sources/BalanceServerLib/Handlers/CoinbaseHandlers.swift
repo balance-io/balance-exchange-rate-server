@@ -19,14 +19,21 @@ public struct CoinbaseHandlers {
     public static func requestTokenHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
             // Generate the request data
-            guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
-                let code = params?["code"] as? String,
-                let postJsonData = preparePostData(code: code) else {
-                    Log.error(message: "requestTokenHandler: Invalid input data")
-                    sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
-                    return
+            guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?] else {
+                Log.error(message: "requestTokenHandler: Invalid incoming post data")
+                sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
+                return
             }
-            
+            guard let code = params?["code"] as? String else {
+                Log.error(message: "requestTokenHandler: Invalid code")
+                sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
+                return
+            }
+            guard let postJsonData = preparePostData(code: code) else {
+                Log.error(message: "requestTokenHandler: Invalid preparation of post data")
+                sendErrorJsonResponse(error: BalanceError.invalidInputData, response: response)
+                return
+            }
             // Get the access token from Coinbase
             getAccessToken(postData: postJsonData, completion: { responseDict, error in
                 if let error = error {
@@ -41,9 +48,11 @@ public struct CoinbaseHandlers {
         }
     }
     
+    
+    
     public static func refreshTokenHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
-            // Generate the request data
+            // Generate the request data -> uni test
             guard let params = try? request.postBodyString?.jsonDecode() as? [String: Any?],
                   let refreshToken = params?["refreshToken"] as? String,
                   let postJsonData = preparePostData(refreshToken: refreshToken) else {
@@ -55,7 +64,7 @@ public struct CoinbaseHandlers {
             // Get the access token from Coinbase
             getAccessToken(postData: postJsonData, completion: { responseDict, error in
                 if let error = error {
-                    Log.error(message: "\(String(describing: error))")
+                    Log.error(message: "Access Token coinbase error:\(String(describing: error))")
                     sendErrorJsonResponse(error: error, response: response)
                     return
                 }
@@ -75,26 +84,26 @@ public struct CoinbaseHandlers {
         }
         
         // Prepare the data
-        var postData: [String: Any] = ["client_id": Config.Coinbase.clientId, "client_secret": Config.Coinbase.clientSecret]
+        var postDataDict: [String: String] = ["client_id": Config.Coinbase.clientId, "client_secret": Config.Coinbase.clientSecret]
         if let code = code {
-            postData["grant_type"] = "authorization_code"
-            postData["code"] = code
-            postData["redirect_uri"] = "balancemymoney://coinbase"
+            postDataDict["grant_type"] = "authorization_code"
+            postDataDict["code"] = code
+            postDataDict["redirect_uri"] = "balancemymoney://coinbase"
         } else if let refreshToken = refreshToken {
-            postData["grant_type"] = "refresh_token"
-            postData["refresh_token"] = refreshToken
+            postDataDict["grant_type"] = "refresh_token"
+            postDataDict["refresh_token"] = refreshToken
         }
-        
-        // Convert to JSON
-        let postJsonData = try? postData.jsonEncodedString()
-        return postJsonData?.data(using: .utf8)
+
+        // Convert to post form data
+        let postDataString = encodePostParameters(postDataDict)
+        let postData = postDataString.data(using: .utf8)
+        return postData
     }
     
     // Gets the access token from the Coinbase API
     fileprivate static func getAccessToken(postData: Data, session: DataSession = sharedSession, completion: @escaping ([String: Any?], BalanceError?) -> Void) {
         let url = URL(string: "https://api.coinbase.com/oauth/token")!
         var request = URLRequest(url: url)
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         request.httpBody = postData
         
@@ -106,12 +115,17 @@ public struct CoinbaseHandlers {
             }
             
             let responseString = String(data: data, encoding: .utf8)
-            Log.error(message: "getAccessToken coinbase response: \(String(describing: responseString))")
             if let bodyOptional = try? responseString?.jsonDecode() as? [String: Any?], let body = bodyOptional {
                 // Perform full Coinbase error handling
                 if body["error"] != nil {
-                    Log.error(message: "coinbase error response: \(body)")
-                    completion([String: Any?](), .networkError)
+                    Log.error(message: "coinbase error http status code: \(String(describing: (response as? HTTPURLResponse)?.statusCode)) response: \(body)")
+                    if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 401 {
+                        // Status code 401 means invalid token or other auth error
+                        // https://developers.coinbase.com/docs/wallet/error-codes
+                        completion([String: Any?](), .authenticationError)
+                    } else {
+                        completion([String: Any?](), .unexpectedData)
+                    }
                 } else {
                     var dict = [String: Any?]()
                     dict["accessToken"] = body["access_token"]

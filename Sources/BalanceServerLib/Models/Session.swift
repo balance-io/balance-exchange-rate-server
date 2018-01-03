@@ -13,3 +13,8 @@ public protocol DataSession {
 
 extension URLSession: DataSession {
 }
+
+public func encodePostParameters(_ parameters: [String: String]) -> String {
+    let parametersArray = parameters.map({"\($0)=\($1.URLQueryParameterEncodedValue)"})
+    return parametersArray.joined(separator: "&")
+}
