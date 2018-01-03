@@ -22,6 +22,19 @@ public enum ExchangeRateSource: Int {
     // Fiat
     case fixer        = 10001
     
+    public var source: Int {
+        switch self {
+        case .coinbaseGdax, .coinbaseGdaxEur, .coinbaseGdaxGbp: return 1
+        case .poloniex:     return 2
+        case .bitfinex:     return 3
+        case .kraken:       return 4
+        case .kucoin:       return 5
+        case .hitbtc:       return 6
+        case .binance:      return 7
+        case .fixer: return 10001
+        }
+    }
+    
     public var url: URL {
         switch self {
         // Crypto
@@ -84,7 +97,7 @@ public enum ExchangeRateSource: Int {
     }
     
     public static var allCrypto: [ExchangeRateSource] {
-        return [.coinbaseGdax, .coinbaseGdaxEur, .coinbaseGdaxGbp, .poloniex, .bitfinex, .kraken, .kucoin, .hitbtc, .binance]
+        return [coinbaseGdax, coinbaseGdaxEur, coinbaseGdaxGbp, .poloniex, .bitfinex, .kraken, .kucoin, .hitbtc, .binance]
     }
     
     public static var allFiat: [ExchangeRateSource] {
