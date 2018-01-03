@@ -40,6 +40,10 @@ public enum ExchangeRateSource: Int {
         // Crypto
         case .coinbaseGdax:
             return URL(string: "https://api.coinbase.com/v2/prices/usd/spot")!
+        case .coinbaseGdaxEur:
+            return URL(string: "https://api.coinbase.com/v2/prices/eur/spot")!
+        case .coinbaseGdaxGbp:
+            return URL(string: "https://api.coinbase.com/v2/prices/gbp/spot")!
         case .poloniex:
             return URL(string: "https://poloniex.com/public?command=returnTicker")!
         case .bitfinex:
@@ -54,10 +58,6 @@ public enum ExchangeRateSource: Int {
             return URL(string: "https://api.hitbtc.com/api/2/public/ticker")!
         case .binance:
             return URL(string: "https://api.binance.com/api/v1/ticker/allPrices")!
-        case .coinbaseGdaxEur:
-            return URL(string: "https://api.coinbase.com/v2/prices/eur/spot")!
-        case .coinbaseGdaxGbp:
-            return URL(string: "https://api.coinbase.com/v2/prices/gbp/spot")!
         
         // Fiat
         case .fixer:
