@@ -77,6 +77,7 @@ public enum Currency: Equatable {
     public static let btc: Currency   = .crypto(enum: .btc)
     public static let eth: Currency   = .crypto(enum: .eth)
     public static let ltc: Currency   = .crypto(enum: .ltc)
+    public static let bch: Currency   = .crypto(enum: .bch)
     
     // Equatable
     public static func ==(lhs: Currency, rhs: Currency) -> Bool {

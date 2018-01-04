@@ -23,7 +23,9 @@ public class ExchangeRatesTests: XCTestCase {
                 ("testConvertCryptoDoubleTransformCryptoToOtherFiat", testConvertCryptoDoubleTransformCryptoToOtherFiat),
                 ("testConvertCryptoLTCtoUSDinPoloniex", testConvertCryptoLTCtoUSDinPoloniex),
                 ("testConvertCryptoUSDTtoUSDinKraken", testConvertCryptoUSDTtoUSDinKraken),
-                ("testConvertCryptoRDNtoUSDinKucoin", testConvertCryptoRDNtoUSDinKucoin)]
+                ("testConvertCryptoRDNtoUSDinKucoin", testConvertCryptoRDNtoUSDinKucoin),
+                ("testConvertCryptoCoinbaseEur", testConvertCryptoCoinbaseEur),
+                ("testConvertCryptoCoinbaseGbp", testConvertCryptoCoinbaseGbp)]
     }
     
     private let mockSession = MockSession()
@@ -32,6 +34,11 @@ public class ExchangeRatesTests: XCTestCase {
         super.setUp()
         ExchangeRateTable.rotate()
         loadExhangeInfo()
+    }
+    
+    override public func tearDown() {
+        self.mockSession.mockResponses.removeAll()
+        super.tearDown()
     }
     
     public func testConvert() {
@@ -94,6 +101,9 @@ public class ExchangeRatesTests: XCTestCase {
     }
     
     public func testConvertCryptoCoinbase() {
+        //given
+        loadCoinbaseUsdInfo()
+        
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
         
@@ -101,6 +111,33 @@ public class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .coinbaseGdax))
         let exchange = ExchangeRates.convert(amount: 10.0, from: .ltc, to: .usd, source: ExchangeRateSource.coinbaseGdax)
         XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (53.04*10.0).integerFixedCryptoDecimals())
+    }
+    
+    public func testConvertCryptoCoinbaseEur() {
+        
+        //given
+        loadCoinbaseEurInfo()
+        //when
+        _ = ExchangeRates.updateExchangeRates(sources: [.coinbaseGdaxEur], session: mockSession)
+        
+        //then
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .coinbaseGdaxEur))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .ltc, to: .eur, source: ExchangeRateSource.coinbaseGdaxEur)
+        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (208.02*10.0).integerFixedCryptoDecimals())
+    }
+    
+    public func testConvertCryptoCoinbaseGbp() {
+        
+        //given
+        loadCoinbaseGbpInfo()
+        
+        //when
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
+        
+        //then
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .coinbaseGdax))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .bch, to: .gbp, source: ExchangeRateSource.coinbaseGdax)
+        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (1939.52*10.0).integerFixedCryptoDecimals())
     }
     
     public func testConvertCryptoKraken() {
@@ -178,10 +215,22 @@ public class ExchangeRatesTests: XCTestCase {
         let poloniexData = TestHelpers.poloniexData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "poloniex", data: poloniexData, statusCode: 200, headers: nil))
         
-        let coinbaseData = TestHelpers.coinbaseData
-        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "coinbase", data: coinbaseData, statusCode: 200, headers: nil))
-        
         let kucoinData = TestHelpers.kucoinData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "kucoin", data: kucoinData, statusCode: 200, headers: nil))
+    }
+    
+    public func loadCoinbaseUsdInfo() {
+        let coinbaseData = TestHelpers.coinbaseData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "coinbase", data: coinbaseData, statusCode: 200, headers: nil))
+    }
+    
+    public func loadCoinbaseEurInfo() {
+        let coinbaseData = TestHelpers.coinbaseEurResponseData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "coinbase", data: coinbaseData, statusCode: 200, headers: nil))
+    }
+    
+    public func loadCoinbaseGbpInfo() {
+        let coinbaseData = TestHelpers.coinbaseGbpResponseData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "coinbase", data: coinbaseData, statusCode: 200, headers: nil))
     }
 }

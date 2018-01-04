@@ -11,6 +11,8 @@ import PerfectLib
 public struct ExchangeRateParsing {
     public typealias ParseFunction = (Data) -> ([ExchangeRate], BalanceError?)
     public static let parseFunctions: [ExchangeRateSource: ParseFunction] = [.coinbaseGdax: coinbaseGdax,
+                                                                             .coinbaseGdaxEur: coinbaseGdax,
+                                                                             .coinbaseGdaxGbp: coinbaseGdax,
                                                                              .poloniex:     poloniex,
                                                                              .bitfinex:     bitfinex,
                                                                              .kraken:       kraken,
@@ -34,12 +36,13 @@ public struct ExchangeRateParsing {
         // Parse the exchange rates
         var exchangeRates = [ExchangeRate]()
         for dict in data {
-            guard let base = dict["base"], let amount = dict["amount"], let rate = Double(amount) else {
+            guard let base = dict["base"], let to = dict["currency"], let amount = dict["amount"], let rate = Double(amount) else {
                 return ([], .unexpectedData)
             }
             
             let fromCurrency = Currency.rawValue(base)
-            let exchangeRate = ExchangeRate(source: .coinbaseGdax, from: fromCurrency, to: .usd, rate: rate)
+            let toCurrency = Currency.rawValue(to)
+            let exchangeRate = ExchangeRate(source: .coinbaseGdax, from: fromCurrency, to: toCurrency, rate: rate)
             exchangeRates.append(exchangeRate)
         }
         

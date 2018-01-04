@@ -70,7 +70,7 @@ struct ExchangeRates {
             mysql.close()
         }
         
-        let query = "SELECT * FROM \(ExchangeRateTable.current) WHERE timestamp = \"\(timestamp.mysqlFormatted)\" AND sourceId = \(source.rawValue)"
+        let query = "SELECT * FROM \(ExchangeRateTable.current) WHERE timestamp = \"\(timestamp.mysqlFormatted)\" AND sourceId = \(source.source)"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
             Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
@@ -113,7 +113,7 @@ struct ExchangeRates {
             throw BalanceError.databaseError
         }
         
-        let query = "SELECT MAX(timestamp) FROM \(ExchangeRateTable.current) WHERE sourceId = \(source.rawValue)"
+        let query = "SELECT MAX(timestamp) FROM \(ExchangeRateTable.current) WHERE sourceId = \(source.source)"
         if mysql.query(statement: query) {
             var date: Date? = nil
             if let results = mysql.storeResults(), let row = results.next(), let timestamp = row[0] {
