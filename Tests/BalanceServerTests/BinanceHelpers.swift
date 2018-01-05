@@ -1,6 +1,6 @@
 //
 //  BinanceHelpers.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Benjamin Baron on 12/1/17.
 //

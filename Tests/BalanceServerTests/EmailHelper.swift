@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Benjamin Baron on 12/7/17.
 //

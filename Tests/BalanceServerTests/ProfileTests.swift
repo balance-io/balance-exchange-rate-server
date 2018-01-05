@@ -1,12 +1,12 @@
 //
 //  ProfileTests.swift
-//  BalanceServerPackageDescription
+//  BalanceExchangeRateServerPackageDescription
 //
 //  Created by Benjamin Baron on 11/20/17.
 //
 
 import XCTest
-@testable import BalanceServerLib
+@testable import BalanceExchangeRateServerLib
 
 public class ProfileTests: XCTestCase {
     public static var allTests : [(String, (ProfileTests) -> () throws -> Void)] {

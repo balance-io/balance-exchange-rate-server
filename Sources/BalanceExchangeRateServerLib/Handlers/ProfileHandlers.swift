@@ -1,6 +1,6 @@
 //
 //  ProfileHandlers.swift
-//  BalanceServer
+//  BalanceExchangeRateServer
 //
 //  Created by Benjamin Baron on 11/8/17.
 //

@@ -1,13 +1,13 @@
 //
 //  ExchangeRatesTests.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Raimon Lapuente Ferran on 06/10/2017.
 //
 
 import Foundation
 import XCTest
-@testable import BalanceServerLib
+@testable import BalanceExchangeRateServerLib
 
 public class ExchangeRatesTests: XCTestCase {
     

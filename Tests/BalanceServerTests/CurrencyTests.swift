@@ -1,13 +1,13 @@
 //
 //  CurrencyTests.swift
-//  BalanceServer
+//  BalanceExchangeRateServer
 //
 //  Created by Benjamin Baron on 9/18/17.
 //  Copyright © 2017 Balanced Software, Inc. All rights reserved.
 //
 
 import XCTest
-@testable import BalanceServerLib
+@testable import BalanceExchangeRateServerLib
 
 public class CurrencyTests: XCTestCase {
     

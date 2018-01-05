@@ -1,13 +1,13 @@
 //
 //  EmailTests.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Benjamin Baron on 12/7/17.
 //
 
 import Foundation
 import XCTest
-@testable import BalanceServerLib
+@testable import BalanceExchangeRateServerLib
 
 public class EmailTests: XCTestCase {
     private let mockSession = MockSession()

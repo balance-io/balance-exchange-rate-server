@@ -1,6 +1,6 @@
 //
 //  ExchangeRate.swift
-//  BalanceServer
+//  BalanceExchangeRateServer
 //
 //  Created by Benjamin Baron on 9/29/17.
 //

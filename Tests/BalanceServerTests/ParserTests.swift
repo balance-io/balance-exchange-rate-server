@@ -1,12 +1,12 @@
 //
 //  ParserTests.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Raimon Lapuente Ferran on 29/09/2017.
 //
 
 import XCTest
-@testable import BalanceServerLib
+@testable import BalanceExchangeRateServerLib
 
 public class ParserTests: XCTestCase {
     

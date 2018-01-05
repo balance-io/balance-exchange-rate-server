@@ -1,6 +1,6 @@
 //
 //  FeedbackHandlers.swift
-//  BalanceServerLib
+//  BalanceExchangeRateServerLib
 //
 //  Created by Benjamin Baron on 12/12/17.
 //

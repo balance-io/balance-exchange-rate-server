@@ -7,7 +7,7 @@
 
 import XCTest
 import Foundation
-import BalanceServerLib
+import BalanceExchangeRateServerLib
 import PerfectThread
 
 public class IntegrationTests: XCTestCase {
@@ -20,7 +20,7 @@ public class IntegrationTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     	
         Threading.dispatch {
-            BalanceServer.start()
+            BalanceExchangeRateServer.start()
         } 
 	}
     

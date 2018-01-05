@@ -1,6 +1,6 @@
 //
 //  ExchangeRatesHandlers.swift
-//  BalanceServer
+//  BalanceExchangeRateServer
 //
 //  Created by Benjamin Baron on 9/16/17.
 //  Copyright © 2017 Balanced Software, Inc. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  KucoinHelper.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Benjamin Baron on 11/16/17.
 //

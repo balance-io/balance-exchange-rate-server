@@ -1,6 +1,6 @@
 //
 //  SimpleCache.swift
-//  BalanceServer
+//  BalanceExchangeRateServer
 //
 //  Created by Benjamin Baron on 10/15/17.
 //

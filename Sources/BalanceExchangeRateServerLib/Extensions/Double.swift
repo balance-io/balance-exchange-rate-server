@@ -1,6 +1,6 @@
 //
 //  Double.swift
-//  BalanceServerLib
+//  BalanceExchangeRateServerLib
 //
 //  Created by Raimon Lapuente Ferran on 17/10/2017.
 //

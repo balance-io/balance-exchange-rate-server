@@ -1,6 +1,6 @@
 //
-//  BalanceServer.swift
-//  BalanceServer
+//  BalanceExchangeRateServer.swift
+//  BalanceExchangeRateServer
 //
 //  Created by Benjamin Baron on 9/27/17.
 //  Copyright © 2017 Balanced Software, Inc. All rights reserved.
@@ -14,7 +14,7 @@ import PerfectMySQL
 
 internal let sharedSession = URLSession(configuration: .default)
 
-public struct BalanceServer {
+public struct BalanceExchangeRateServer {
     fileprivate static let routes = TestHandlers.routes + AppEngineHandlers.routes + BalanceHandlers.routes +
                                     CoinbaseHandlers.routes + ExchangeRatesHandlers.routes + ProfileHandlers.routes +
                                     FeedbackHandlers.routes

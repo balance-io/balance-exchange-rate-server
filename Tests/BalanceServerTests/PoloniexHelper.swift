@@ -1,6 +1,6 @@
 //
 //  PoloniexHelper.swift
-//  BalanceServerTests
+//  BalanceExchangeRateServerTests
 //
 //  Created by Raimon Lapuente Ferran on 04/10/2017.
 //

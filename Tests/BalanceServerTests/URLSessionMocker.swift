@@ -1,5 +1,5 @@
 import Foundation
-import BalanceServerLib
+import BalanceExchangeRateServerLib
 
 internal final class MockSession: DataSession
 {
