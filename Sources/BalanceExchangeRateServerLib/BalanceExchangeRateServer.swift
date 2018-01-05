@@ -15,9 +15,7 @@ import PerfectMySQL
 internal let sharedSession = URLSession(configuration: .default)
 
 public struct BalanceExchangeRateServer {
-    fileprivate static let routes = TestHandlers.routes + AppEngineHandlers.routes + BalanceHandlers.routes +
-                                    CoinbaseHandlers.routes + ExchangeRatesHandlers.routes + ProfileHandlers.routes +
-                                    FeedbackHandlers.routes
+    fileprivate static let routes = BalanceHandlers.routes + ExchangeRatesHandlers.routes
 
     fileprivate static let confData = [
         "servers": [

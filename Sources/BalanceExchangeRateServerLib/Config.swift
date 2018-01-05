@@ -11,7 +11,7 @@ import Foundation
 struct Config {
     struct Server {
         static let name = "localhost"
-        static let port = 8080
+        static let port = 8081
     }
     
     struct MySQL {
@@ -25,24 +25,6 @@ struct Config {
             static let user = PrivateConfig.MySQL.user
             static let pass = PrivateConfig.MySQL.pass
             static let socket = PrivateConfig.MySQL.socket
-        #endif
-    }
-    
-    struct Coinbase {
-        #if os(OSX) || DEBUG || CIRCLECI
-            static let clientId = ""
-            static let clientSecret = ""
-        #else
-            static let clientId = PrivateConfig.Coinbase.clientId
-            static let clientSecret = PrivateConfig.Coinbase.clientSecret
-        #endif
-    }
-    
-    struct Mailgun {
-        #if os(OSX) || DEBUG || CIRCLECI
-            static let url = ""
-        #else
-            static let url = PrivateConfig.Mailgun.url
         #endif
     }
 }
