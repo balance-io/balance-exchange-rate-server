@@ -45,16 +45,14 @@ public func connectToMysql(db: String? = "balance") -> MySQL? {
     return mysql
 }
 
-// NOTE: All valid cron jobs from Google come from IP address 0.1.0.1 and have the header "X-Appengine-Cron"
-// NOTE NOTE: So the docs are totally wrong. For flex instances, it looks like ALL requests come from 172.17.0.1,
-//            which is presumably the internal IP of the nginx proxy. So checking IP is actually not helpful at all.
+// NOTE: Ensure the request came from localhost
 public func isValidCronRequest(request: HTTPRequest) -> Bool {
     // Ensure proper header is included if we're not calling this from localhost
     #if os(OSX) || DEBUG
         return true
     #else
-        guard request.header(.custom(name: "X-Appengine-Cron")) == "true" else {
-            Log.error(message: "Not a valid cron job. The request does not contain the X-Appengine-Cron header set to true, headers: \(request.headers)")
+        guard request.remoteAddress.host == "127.0.0.1" else {
+            Log.error(message: "Not a valid cron job. The request does not originate from localhost, host: \(request.remoteAddress.host)")
             return false
         }
         return true
