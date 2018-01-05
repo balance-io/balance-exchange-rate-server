@@ -21,10 +21,10 @@ struct Config {
             static let pass = "test"
             static let socket: String? = nil
         #else
-            static let host: String? = PrivateConfig.MySQL.host
-            static let user = PrivateConfig.MySQL.user
-            static let pass = PrivateConfig.MySQL.pass
-            static let socket = PrivateConfig.MySQL.socket
+            static let host: String? = PrivateConfigExchangeRates.MySQL.host
+            static let user = PrivateConfigExchangeRates.MySQL.user
+            static let pass = PrivateConfigExchangeRates.MySQL.pass
+            static let socket = PrivateConfigExchangeRates.MySQL.socket
         #endif
     }
 }
