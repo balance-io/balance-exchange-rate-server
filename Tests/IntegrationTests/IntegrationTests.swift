@@ -36,7 +36,7 @@ public class IntegrationTests: XCTestCase {
     private func checkHost() {
         //given
         let expectation = self.expectation(description: "Get hello string")
-        let url = URL(string: "http://0.0.0.0:8080/hello")!
+        let url = URL(string: "http://0.0.0.0:8081/hello")!
         let expectedResponse = "hello"
         let session = URLSession(configuration: .default)
         let datatask = session.dataTask(with: url) { data, response, error in
