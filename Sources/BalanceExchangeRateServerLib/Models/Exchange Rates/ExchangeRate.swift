@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Dispatch
 import PerfectLib
 import PerfectThread
 import PerfectMySQL
@@ -190,25 +191,19 @@ struct ExchangeRates {
     // MARK: Update
     
     public static func updateExchangeRates(sources: [ExchangeRateSource], session: DataSession = sharedSession) {
+        // Call each API concurrently and store the rates
         let startTime = Date()
-        // Call each API and store the rates
-        // TODO: Rewrite this to be concurrent
+        let group = DispatchGroup()
         for source in sources {
-            let promise = Promise<Bool> { p in
-                ExchangeRates.updateRatesForExchange(source: source, startTime: startTime, session: session) { balError in
-                    if let balError = balError {
-                        Log.error(message: "Error updating exchange rates for \(source): \(balError)")
-                    }
-                    p.set(true)
+            group.enter()
+            ExchangeRates.updateRatesForExchange(source: source, startTime: startTime, session: session) { balError in
+                if let balError = balError {
+                    Log.error(message: "Error updating exchange rates for \(source): \(balError)")
                 }
-            }
-            
-            do {
-                _ = try promise.wait(seconds: 5.0)
-            } catch {
-                Log.error(message: "Took longer than 5 seconds to update exchange rates for \(source): \(error)")
+                group.leave()
             }
         }
+        group.wait()
     }
     
     public static func updateRatesForExchange(source: ExchangeRateSource, startTime: Date, session: DataSession = sharedSession, completion: @escaping (BalanceError?) -> Void) {
