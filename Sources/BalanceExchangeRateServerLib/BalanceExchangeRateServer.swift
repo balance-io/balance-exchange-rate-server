@@ -67,7 +67,14 @@ public struct BalanceExchangeRateServer {
             let name = cronjobName(arguments: arguments)
             Log.info(message: "Running cron job: \(name)")
             Cronjobs.runCronjob(withName: name) { exitCode in
-                Log.info(message: "Finished running cron job: \(name)")
+                if exitCode == .success {
+                    Log.info(message: "Finished running cron job: \(name)")
+                } else if exitCode == .commandNotFound {
+                    Log.error(message: "No a valid cron job: \(name)")
+                } else {
+                    Log.error(message: "Failed to run cron job: \(name)")
+                }
+                
                 exit(exitCode.rawValue)
             }
             RunLoop.main.run(until: Date.distantFuture)
