@@ -5,4 +5,4 @@
 0 0 * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron updateAllFiat 1>/var/log/exchangerates_cron.log 2>/var/log/exchangerates_cron.log
 
 # Pull crypto prices every minute
-* * * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron updateAllFiat 1>/var/log/exchangerates_cron.log 2>/var/log/exchangerates_cron.log
+* * * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron updateAllCrypto 1>/var/log/exchangerates_cron.log 2>/var/log/exchangerates_cron.log

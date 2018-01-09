@@ -38,6 +38,8 @@ Server Setup Notes (work in progress, will fill in some more details later):
    f. service exchangerates start
 7. Setup the cron jobs
    a. copy server/cron/exchangerates to /etc/cron.d
+   b. chown root:root /etc/cron.d/exchangerates
+   c. chmod 644 /etc/cron.d/exchangerates
    b. touch /var/log/exchangerates_cron.log
    c. chgrp exchangerates exchangerates_cron.log
    d. chmod g+w exchangerates_cron.log
