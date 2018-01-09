@@ -20,7 +20,7 @@ public enum LogType: String {
 public struct BetterConsoleLogger: Logger {
     private var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss zzz"
+        dateFormatter.dateFormat = "yyyy-MM-dd hh:mm:ss.SSS zzz"
         return dateFormatter
     }()
     
