@@ -1,0 +1,13 @@
+[Unit]
+Description=Balance Exchange Rates Server
+After=network.target
+
+[Service]
+User=exchangerates
+Type=simple
+Restart=always
+RestartSec=30
+ExecStart=/bin/bash -c 'exec /opt/exchangerates/BalanceExchangeRateServer &>> /var/log/exchangerates.log'
+
+[Install]
+WantedBy=multi-user.target

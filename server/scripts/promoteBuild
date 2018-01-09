@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Promoting new build"
+chown root:root BalanceExchangeRateServer.new && chmod 755 BalanceExchangeRateServer.new && service exchangerates stop && mv BalanceExchangeRateServer BalanceExchangeRateServer.old && mv BalanceExchangeRateServer.new BalanceExchangeRateServer && service exchangerates start
+echo "Done"

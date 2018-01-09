@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Reverting to old build"
+service exchangerates stop && mv BalanceExchangeRateServer BalanceExchangeRateServer.new && mv BalanceExchangeRateServer.old BalanceExchangeRateServer && service exchangerates start
+echo "Done"

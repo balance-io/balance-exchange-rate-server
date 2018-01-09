@@ -13,10 +13,39 @@ Server Setup Notes (work in progress, will fill in some more details later):
    b. Setup the balance user and create balance db
 5. Install other dependencies
    a. apt-get install libcurl4-openssl-dev
+6. Build the project using a Linux VM
+   a. swift build --configuration release
+7. Upload initial build and scripts to server
+   a. On server
+      1) mkdir /opt/exchangerates
+      2) chown root:admin /opt/exchangerates
+      3) chmod 775 exchangerates
+   b. On build machine
+      1) scp ./.build/x86_64-unknown-linux/release/BalanceExchangeRateServer exchangerates.balancemy.money:/opt/exchangerates/BalanceExchangeRateServer
+      2) scp ./server/scripts/promoteBuild ./server/scripts/revertBuild exchangerates.balancemy.money:/opt/exchangerates/
+   c. On server
+      1) cd /opt/exchangerates/
+      2) chown root:root BalanceExchangeRateServer promoteBuild revertBuild 
+      3) chmod 755 BalanceExchangeRateServer
+      4) chmod 744 promoteBuild revertBuild
 6. Install the service
-   a. Copy exchangerates.service to /etc/systemd/system/
+   a. Copy server/systemd/exchangerates.service to /etc/systemd/system/
+      1) Note that Finder is ridulously stupid and will show a .app extension on this file even though it doesn't exist. Don't try and rename it, it won't work. Just trust the terminal.
    b. systemctl daemon-reload
    c. touch /var/log/exchangerates.log
    d. chgrp exchangerates exchangerates.log
    e. chmod g+w exchangerates.log
    f. service exchangerates start
+7. Setup the cron jobs
+   a. copy server/cron/exchangerates to /etc/cron.d
+   b. touch /var/log/exchangerates_cron.log
+   c. chgrp exchangerates exchangerates_cron.log
+   d. chmod g+w exchangerates_cron.log
+8. Upload new build
+   a. On build machine
+      1) swift build --configuration release
+      2) scp ./.build/x86_64-unknown-linux/release/BalanceExchangeRateServer exchangerates.balancemy.money:/opt/exchangerates/BalanceExchangeRateServer.new
+   b. On server
+      1) cd /opt/exchangerates
+      2) sudo promoteBuild
+      3) If something goes wrong: sudo revertBuild
