@@ -57,6 +57,10 @@ public struct BalanceExchangeRateServer {
     }
 
     public static func start() {
+        // Set Perfect to use our Logger
+        Log.logger = BetterConsoleLogger()
+        
+        // Process arguments and run
         let arguments = CommandLine.arguments
         if isCronjob(arguments: arguments) {
             // Run the specified cronjob
