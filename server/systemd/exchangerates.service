@@ -6,8 +6,8 @@ After=network.target
 User=exchangerates
 Type=simple
 Restart=always
-RestartSec=30
-ExecStart=/bin/bash -c 'exec /opt/exchangerates/BalanceExchangeRateServer &>> /var/log/exchangerates.log'
+RestartSec=15
+ExecStart=/bin/bash -ce 'exec stdbuf -i0 -o0 -e0 /opt/exchangerates/BalanceExchangeRateServer &>> /var/log/exchangerates.log'
 
 [Install]
 WantedBy=multi-user.target
