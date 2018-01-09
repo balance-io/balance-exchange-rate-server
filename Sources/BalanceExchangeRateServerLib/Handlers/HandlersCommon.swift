@@ -44,17 +44,3 @@ public func connectToMysql(db: String? = "balance") -> MySQL? {
     }
     return mysql
 }
-
-// NOTE: Ensure the request came from localhost
-public func isValidCronRequest(request: HTTPRequest) -> Bool {
-    // Ensure proper header is included if we're not calling this from localhost
-    #if os(OSX) || DEBUG
-        return true
-    #else
-        guard request.remoteAddress.host == "127.0.0.1" else {
-            Log.error(message: "Not a valid cron job. The request does not originate from localhost, host: \(request.remoteAddress.host)")
-            return false
-        }
-        return true
-    #endif
-}

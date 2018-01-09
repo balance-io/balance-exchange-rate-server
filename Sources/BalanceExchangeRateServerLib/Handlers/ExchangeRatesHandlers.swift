@@ -19,28 +19,16 @@ import PerfectMySQL
 // standard source, i.e. Coinbase/GDAX, then on to other fiat currencies as needed. We'll see if we need more precision in the future.
 public struct ExchangeRatesHandlers {
     public static let routes = [["method": "get", "uri": "/exchangeRates", "handler": exchangeRatesHandler],
-                                ["method": "get", "uri": "/exchangeRates/convert", "handler": convertHandler],
-
-                                // Cron jobs
-                                ["method": "get", "uri": "/exchangeRates/updateCrypto", "handler": updateAllCryptoHandler],
-                                ["method": "get", "uri": "/exchangeRates/updateFiat", "handler": updateAllFiatHandler],
-                                ["method": "get", "uri": "/exchangeRates/rotateTables", "handler": rotateTablesHandler]]
+                                ["method": "get", "uri": "/exchangeRates/convert", "handler": convertHandler]]
     
-    fileprivate static let cache = SimpleCache<String, [String: Any]>()
     fileprivate static let exchangeRatesKey = "exchangeRates"
     
     // MARK: - Handlers -
     
     public static func exchangeRatesHandler(data: [String: Any]) throws -> RequestHandler {
         return { request, response in
-            if let cachedExchangeRates = cache.get(valueForKey: exchangeRatesKey) {
-                sendSuccessJsonResponse(dict: cachedExchangeRates, response: response)
-                return
-            }
-            
             do {
                 let dict = try ExchangeRates.latestExchangeRates()
-                cache.set(value: dict, forKey: exchangeRatesKey)
                 sendSuccessJsonResponse(dict: dict, response: response)
             } catch {
                 let returnError = error as? BalanceError ?? .networkError
@@ -73,54 +61,4 @@ public struct ExchangeRatesHandlers {
             sendSuccessJsonResponse(dict: ["value": returnValue.description], response: response)
         }
     }
-    
-    // NOTE: Called once per minute by a cron job
-    public static func updateAllCryptoHandler(data: [String: Any]) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allCrypto, session: sharedSession)
-    }
-    
-    // NOTE: Called once per day by a cron job
-    public static func updateAllFiatHandler(data: [String: Any]) throws -> RequestHandler {
-        return ExchangeRatesHandlers.updateHandler(sources: ExchangeRateSource.allFiat, session: sharedSession)
-    }
-    
-    public static func updateHandler(sources: [ExchangeRateSource], session: DataSession = sharedSession) -> RequestHandler {
-        return { request, response in
-            // Ensure this is a valid cron job request
-            guard isValidCronRequest(request: request) else {
-                response.status = .forbidden
-                response.completed()
-                return
-            }
-            ExchangeRates.updateExchangeRates(sources: sources, session: session)
-            
-            // Clear the cache
-            cache.remove(valueForKey: exchangeRatesKey)
-            
-            // Complete the handler when all exchanges finish updating
-            response.status = .ok
-            response.completed()
-        }
-    }
-    
-    // NOTE: Called once per month by a cron job
-    public static func rotateTablesHandler(data: [String: Any]) throws -> RequestHandler {
-        return { request, response in
-            // Check for google cron job header
-            guard isValidCronRequest(request: request) else {
-                response.status = .forbidden
-                response.completed()
-                return
-            }
-            
-            // Always have current and next table, this cron job creates next month's table if needed
-            ExchangeRateTable.rotate()
-            
-            // TODO: In the future, this will also warehouse the older data into hour granularity instead of minute
-            
-            response.status = .ok
-            response.completed()
-        }
-    }
-    
 }

@@ -10,6 +10,7 @@ Server Setup Notes (work in progress, will fill in some more details later):
       3) ldconfig
 4. Install MySQL 
    a. apt-get install mysql-server mysql-client libmysqlclient-dev
+   b. Setup the balance user and create balance db
 5. Install other dependencies
    a. apt-get install libcurl4-openssl-dev
 6. Install the service

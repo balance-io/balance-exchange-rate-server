@@ -33,13 +33,52 @@ public struct BalanceExchangeRateServer {
             ]
         ]
     ]
+    
+    public static func isCronjob(arguments: [String]) -> Bool {
+        if arguments.count == 3 && arguments[1] == "cron" {
+            return true
+        }
+        
+        return false
+    }
+    
+    public static func cronjobName(arguments: [String]) -> String {
+        guard isCronjob(arguments: arguments) else {
+            return ""
+        }
+        
+        return arguments[2]
+    }
+    
+    public static func printUsage(arguments: [String]) {
+        let binaryName = arguments.first ?? ""
+        print("To run a cron job: \(binaryName) cron jobName")
+        print("Otherwise, run without any arguments to start the web server")
+    }
 
     public static func start() {
-        do {
-            // Launch the servers based on the configuration data.
-            try HTTPServer.launch(configurationData: confData)
-        } catch {
-            fatalError("\(error)") // fatal error launching one of the servers
+        let arguments = CommandLine.arguments
+        if isCronjob(arguments: arguments) {
+            // Run the specified cronjob
+            let name = cronjobName(arguments: arguments)
+            Log.info(message: "Running cron job: \(name)")
+            Cronjobs.runCronjob(withName: name) { exitCode in
+                Log.info(message: "Finished running cron job: \(name)")
+                exit(exitCode.rawValue)
+            }
+            RunLoop.main.run(until: Date.distantFuture)
+        } else if arguments.count > 1 {
+            // Print usage instructions
+            printUsage(arguments: arguments)
+            exit(ExitCode.commandNotFound.rawValue)
+        } else {
+            // Start the web server
+            do {
+                try HTTPServer.launch(configurationData: confData)
+                exit(ExitCode.success.rawValue)
+            } catch {
+                fatalError("\(error)") // fatal error launching one of the servers
+            }
         }
     }
 }
