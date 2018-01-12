@@ -31,7 +31,7 @@ public extension Array where Element == ExchangeRate {
     }
 }
 
-struct ExchangeRates {
+public struct ExchangeRates {
     // MARK: Get
     
     public static func latestExchangeRates() throws -> [String: Any] {

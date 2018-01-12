@@ -20,18 +20,21 @@ public enum ExchangeRateSource: Int {
     case coinbaseGdaxGbp = 9
     
     // Fiat
-    case fixer        = 10001
+    case fixer         = 10001
+    case currencylayer = 10002
     
     public var source: Int {
         switch self {
         case .coinbaseGdax, .coinbaseGdaxEur, .coinbaseGdaxGbp: return 1
-        case .poloniex:     return 2
-        case .bitfinex:     return 3
-        case .kraken:       return 4
-        case .kucoin:       return 5
-        case .hitbtc:       return 6
-        case .binance:      return 7
-        case .fixer: return 10001
+        case .poloniex:      return 2
+        case .bitfinex:      return 3
+        case .kraken:        return 4
+        case .kucoin:        return 5
+        case .hitbtc:        return 6
+        case .binance:       return 7
+            
+        case .fixer:         return 10001
+        case .currencylayer: return 10002
         }
     }
     
@@ -62,6 +65,8 @@ public enum ExchangeRateSource: Int {
         // Fiat
         case .fixer:
             return URL(string: "http://api.fixer.io/latest?base=USD")!
+        case .currencylayer:
+            return URL(string: "https://www.apilayer.net/api/live?access_key=\(Config.CurrencyLayer.accessKey)")!
         }
     }
     
@@ -90,8 +95,6 @@ public enum ExchangeRateSource: Int {
     // These are the currencies that values are stored in for this exchange (i.e. Poloniex only has BTC and ETC, but not fiat currencies)
     public var mainCurrencies: [Currency] {
         switch self {
-//        case .poloniex: return [.btc, .eth]
-//        case .kraken: return [.usd, .btc]
         default: return [.btc, .eth, .usd]
         }
     }
@@ -101,7 +104,7 @@ public enum ExchangeRateSource: Int {
     }
     
     public static var allFiat: [ExchangeRateSource] {
-        return [.fixer]
+        return [.fixer, .currencylayer]
     }
     
     public static var all: [ExchangeRateSource] {

@@ -27,4 +27,8 @@ struct Config {
             static let socket = PrivateConfigExchangeRates.MySQL.socket
         #endif
     }
+    
+    struct CurrencyLayer {
+        static let accessKey = PrivateConfigExchangeRates.Currencylayer.accessKey
+    }
 }

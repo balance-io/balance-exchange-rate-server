@@ -10,16 +10,19 @@ import PerfectLib
 
 public struct ExchangeRateParsing {
     public typealias ParseFunction = (Data) -> ([ExchangeRate], BalanceError?)
-    public static let parseFunctions: [ExchangeRateSource: ParseFunction] = [.coinbaseGdax: coinbaseGdax,
+    public static let parseFunctions: [ExchangeRateSource: ParseFunction] = [ // Crypto
+                                                                             .coinbaseGdax:    coinbaseGdax,
                                                                              .coinbaseGdaxEur: coinbaseGdax,
                                                                              .coinbaseGdaxGbp: coinbaseGdax,
-                                                                             .poloniex:     poloniex,
-                                                                             .bitfinex:     bitfinex,
-                                                                             .kraken:       kraken,
-                                                                             .kucoin:       kucoin,
-                                                                             .hitbtc:       hitbtc,
-                                                                             .binance:      binance,
-                                                                             .fixer:        fixer]
+                                                                             .poloniex:        poloniex,
+                                                                             .bitfinex:        bitfinex,
+                                                                             .kraken:          kraken,
+                                                                             .kucoin:          kucoin,
+                                                                             .hitbtc:          hitbtc,
+                                                                             .binance:         binance,
+                                                                              // Fiat
+                                                                             .fixer:           fixer,
+                                                                             .currencylayer:   currencylayer]
     
     public static func function(forSource source: ExchangeRateSource) -> ParseFunction? {
         return parseFunctions[source]
@@ -313,6 +316,44 @@ public struct ExchangeRateParsing {
         var exchangeRates = [ExchangeRate]()
         for (key, value) in rates {
             let exchangeRate = ExchangeRate(source: .fixer, from: .usd, to: Currency.rawValue(key), rate: value)
+            exchangeRates.append(exchangeRate)
+        }
+        
+        return (exchangeRates, nil)
+    }
+    
+    public static func currencylayer(responseData: Data) -> ([ExchangeRate], BalanceError?) {
+        let responseString = String(data: responseData, encoding: .utf8)
+        
+        // Verify the response is correct
+        guard let bodyOptional = try? responseString?.jsonDecode() as? [String: Any], let body = bodyOptional else {
+            return ([], .jsonDecoding)
+        }
+        
+        // Check that the exchange rates are there
+        guard let rates = body["quotes"] as? [String: Any] else {
+            return ([], .unexpectedData)
+        }
+        
+        // Parse the exchange rates
+        var exchangeRates = [ExchangeRate]()
+        for (key, value) in rates {
+            // Convert the value to a Double (some are Ints)
+            var valueDouble = value as? Double
+            if valueDouble == nil, let valueInt = value as? Int {
+                valueDouble = Double(valueInt)
+            }
+            
+            guard key.count == 6, let rate = valueDouble else {
+                continue
+            }
+            
+            let fromCode = key.substring(to: 3)
+            let fromCurrency = Currency.rawValue(fromCode)
+            let toCode = key.substring(from: 3)
+            let toCurrency = Currency.rawValue(toCode)
+            
+            let exchangeRate = ExchangeRate(source: .currencylayer, from: fromCurrency, to: toCurrency, rate: rate)
             exchangeRates.append(exchangeRate)
         }
         
