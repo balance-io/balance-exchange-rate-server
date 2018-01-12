@@ -59,7 +59,13 @@ public class ParserTests: XCTestCase {
                 ("testFixerParsingThrowsErrorOnEmptyData", testFixerParsingThrowsErrorOnEmptyData),
                 ("testFixerParsingThrowsErrorOnWrongData", testFixerParsingThrowsErrorOnWrongData),
                 ("testFixerParsingNumberOfObjects", testFixerParsingNumberOfObjects),
-                ("testFixerParsingObjectProperties", testFixerParsingObjectProperties)
+                ("testFixerParsingObjectProperties", testFixerParsingObjectProperties),
+                
+                ("testCurrencylayerParsingDoesntGiveError", testCurrencylayerParsingDoesntGiveError),
+                ("testCurrencylayerParsingThrowsErrorOnEmptyData", testCurrencylayerParsingThrowsErrorOnEmptyData),
+                ("testCurrencylayerParsingThrowsErrorOnWrongData", testCurrencylayerParsingThrowsErrorOnWrongData),
+                ("testCurrencylayerParsingNumberOfObjects", testCurrencylayerParsingNumberOfObjects),
+                ("testCurrencylayerParsingObjectProperties", testCurrencylayerParsingObjectProperties)
         ]
     }
     
@@ -546,5 +552,65 @@ public class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRate.from, Currency.usd)
         XCTAssertEqual(exchangeRate.to, Currency.gbp)
         XCTAssertEqual(exchangeRate.rate, 0.74406)
+    }
+    
+    public func testCurrencylayerParsingDoesntGiveError() {
+        //given
+        let currencylayerData = TestHelpers.currencylayerData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.currencylayer(responseData: currencylayerData)
+        
+        //then
+        XCTAssertNil(error)
+    }
+    
+    public func testCurrencylayerParsingThrowsErrorOnEmptyData() {
+        //given
+        let emptyData = TestHelpers.emptyData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.currencylayer(responseData: emptyData)
+        
+        //then
+        XCTAssertNotNil(error)
+    }
+    
+    public func testCurrencylayerParsingThrowsErrorOnWrongData() {
+        //given
+        let wrongData = TestHelpers.wrongData
+        
+        //when
+        let (_, error) = ExchangeRateParsing.currencylayer(responseData: wrongData)
+        
+        //then
+        XCTAssertNotNil(error)
+    }
+    
+    public func testCurrencylayerParsingNumberOfObjects() {
+        //given
+        let currencylayerData = TestHelpers.currencylayerData
+        
+        //when
+        let (exchangeRates, error) = ExchangeRateParsing.currencylayer(responseData: currencylayerData)
+        
+        //then
+        XCTAssertNil(error, error!.errorDescription)
+        XCTAssertEqual(exchangeRates.count, 168)
+    }
+    
+    public func testCurrencylayerParsingObjectProperties() {
+        //given
+        let currencylayerData = TestHelpers.currencylayerSimpleData
+        
+        //when
+        let (exchangeRates, _) = ExchangeRateParsing.currencylayer(responseData: currencylayerData)
+        let exchangeRate = exchangeRates.first!
+        
+        //then
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.currencylayer)
+        XCTAssertEqual(exchangeRate.from, Currency.usd)
+        XCTAssertEqual(exchangeRate.to, Currency.rawValue("COP"))
+        XCTAssertEqual(exchangeRate.rate, 2856.800049)
     }
 }
