@@ -14,7 +14,8 @@ public class ExchangeRatesTests: XCTestCase {
     // required for running tests from `swift test` command
     public static var allTests : [(String, (ExchangeRatesTests) -> () throws -> Void)] {
         return [("testConvert", testConvert),
-                ("testConvertFiat", testConvertFiat),
+                ("testConvertFiatFixer", testConvertFiatFixer),
+                ("testConvertFiatCurrencylayer", testConvertFiatCurrencylayer),
                 ("testConvertCryptoPoloniex", testConvertCryptoPoloniex),
                 ("testConvertCryptoBitfinex", testConvertCryptoBitfinex),
                 ("testConvertCryptoCoinbase", testConvertCryptoCoinbase),
@@ -68,7 +69,7 @@ public class ExchangeRatesTests: XCTestCase {
 //        XCTAssertNil(try exchangeRate.latestExchangeRates(forSource: .poloniex))
 //    }
     
-    public func testConvertFiat() {
+    public func testConvertFiatFixer() {
         //when
         _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allFiat, session: mockSession)
         
@@ -76,6 +77,16 @@ public class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .fixer))
         let exchange = ExchangeRates.convert(amount: 10.0, from: .usd, to: .eur, source: ExchangeRateSource.fixer)
         XCTAssertEqual(exchange?.integerFixedFiatDecimals(), 849)
+    }
+    
+    public func testConvertFiatCurrencylayer() {
+        //when
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allFiat, session: mockSession)
+        
+        //then
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .currencylayer))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .usd, to: .eur, source: ExchangeRateSource.currencylayer)
+        XCTAssertEqual(exchange?.integerFixedFiatDecimals(), 822)
     }
     
     public func testConvertCryptoPoloniex() {
@@ -206,9 +217,6 @@ public class ExchangeRatesTests: XCTestCase {
         let bitfinexData = TestHelpers.bitfinexData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "bitfinex", data: bitfinexData, statusCode: 200, headers: nil))
         
-        let fixerData = TestHelpers.fixerData
-        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "fixer", data: fixerData, statusCode: 200, headers: nil))
-        
         let krakenData = TestHelpers.krakenData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "kraken", data: krakenData, statusCode: 200, headers: nil))
         
@@ -217,6 +225,12 @@ public class ExchangeRatesTests: XCTestCase {
         
         let kucoinData = TestHelpers.kucoinData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "kucoin", data: kucoinData, statusCode: 200, headers: nil))
+        
+        let fixerData = TestHelpers.fixerData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "fixer", data: fixerData, statusCode: 200, headers: nil))
+        
+        let currencylayerData = TestHelpers.currencylayerData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "apilayer", data: currencylayerData, statusCode: 200, headers: nil))
     }
     
     public func loadCoinbaseUsdInfo() {
