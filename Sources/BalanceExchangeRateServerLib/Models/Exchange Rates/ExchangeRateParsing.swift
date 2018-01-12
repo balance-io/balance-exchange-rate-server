@@ -20,6 +20,7 @@ public struct ExchangeRateParsing {
                                                                              .kucoin:          kucoin,
                                                                              .hitbtc:          hitbtc,
                                                                              .binance:         binance,
+                                                                             .bittrex:         bittrex,
                                                                               // Fiat
                                                                              .fixer:           fixer,
                                                                              .currencylayer:   currencylayer]
@@ -293,6 +294,42 @@ public struct ExchangeRateParsing {
             let fromCurrency = Currency.rawValue(fromCode)
             let toCurrency = Currency.rawValue(toCode)
             let exchangeRate = ExchangeRate(source: .binance, from: fromCurrency, to: toCurrency, rate: price)
+            exchangeRates.append(exchangeRate)
+        }
+        
+        return (exchangeRates, nil)
+    }
+    
+    public static func bittrex(responseData: Data) -> ([ExchangeRate], BalanceError?) {
+        let responseString = String(data: responseData, encoding: .utf8)
+        
+        // Verify the response is correct
+        guard let bodyOptional = try? responseString?.jsonDecode() as? [String: Any], let body = bodyOptional else {
+            return ([], .jsonDecoding)
+        }
+        
+        // Check that the exchange rates are there
+        guard let result = body["result"] as? [[String: Any]] else {
+            return ([], .unexpectedData)
+        }
+        
+        // Parse the exchange rates
+        var exchangeRates = [ExchangeRate]()
+        for rateDict in result {
+            guard let marketName = rateDict["MarketName"] as? String, let last = rateDict["Last"] as? Double else {
+                return ([], .unexpectedData)
+            }
+            
+            // Parse currency (ignoring USDT prices)
+            let codes = marketName.components(separatedBy: "-")
+            guard codes.count == 2 else {
+                return ([], .unexpectedData)
+            }
+            
+            let from = Currency.rawValue(codes[0])
+            let to = Currency.rawValue(codes[1])
+            
+            let exchangeRate = ExchangeRate(source: .bittrex, from: from, to: to, rate: last)
             exchangeRates.append(exchangeRate)
         }
         
