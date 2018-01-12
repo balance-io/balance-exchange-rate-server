@@ -1,8 +1,8 @@
 # Rotate the exchange rate database tables every day (keeps the current week and next week tables always available)
 0 2 * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron rotateTables 1>>/var/log/exchangerates_cron.log 2>>/var/log/exchangerates_cron.log
 
-# Pull fiat prices once a day as they don't change often
-0 0 * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron updateAllFiat 1>>/var/log/exchangerates_cron.log 2>>/var/log/exchangerates_cron.log
+# Pull fiat prices every hour as that's the highest resolution we have access to currently
+0 * * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron updateAllFiat 1>>/var/log/exchangerates_cron.log 2>>/var/log/exchangerates_cron.log
 
 # Pull crypto prices every minute
 * * * * * exchangerates /opt/exchangerates/BalanceExchangeRateServer cron updateAllCrypto 1>>/var/log/exchangerates_cron.log 2>>/var/log/exchangerates_cron.log
