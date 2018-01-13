@@ -1,5 +1,5 @@
 //
-//  ExchangeRatesTests.swift
+//  ConvertTests.swift
 //  BalanceExchangeRateServerTests
 //
 //  Created by Raimon Lapuente Ferran on 06/10/2017.
@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import BalanceExchangeRateServerLib
 
-public class ExchangeRatesTests: XCTestCase {
+public class ConvertTests: XCTestCase {
     
     // required for running tests from `swift test` command
     public static var allTests : [(String, (ExchangeRatesTests) -> () throws -> Void)] {
@@ -26,7 +26,8 @@ public class ExchangeRatesTests: XCTestCase {
                 ("testConvertCryptoUSDTtoUSDinKraken", testConvertCryptoUSDTtoUSDinKraken),
                 ("testConvertCryptoRDNtoUSDinKucoin", testConvertCryptoRDNtoUSDinKucoin),
                 ("testConvertCryptoCoinbaseEur", testConvertCryptoCoinbaseEur),
-                ("testConvertCryptoCoinbaseGbp", testConvertCryptoCoinbaseGbp)]
+                ("testConvertCryptoCoinbaseGbp", testConvertCryptoCoinbaseGbp),
+                ("testConvertCryptoBittrex", testConvertCryptoBittrex)]
     }
     
     private let mockSession = MockSession()
@@ -213,6 +214,16 @@ public class ExchangeRatesTests: XCTestCase {
         XCTAssertNotNil(exchange)
     }
     
+    public func testConvertCryptoBittrex() {
+        //when
+        _ = ExchangeRates.updateExchangeRates(sources: ExchangeRateSource.allCrypto, session: mockSession)
+        
+        //then
+        XCTAssertNotNil(try ExchangeRates.latestExchangeRates(forSource: .bittrex))
+        let exchange = ExchangeRates.convert(amount: 10.0, from: .ltc, to: .btc, source: ExchangeRateSource.bittrex)
+        XCTAssertEqual(exchange?.integerFixedCryptoDecimals(), (53.04*10.0).integerFixedCryptoDecimals())
+    }
+    
     private func loadExhangeInfo() {
         let bitfinexData = TestHelpers.bitfinexData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "bitfinex", data: bitfinexData, statusCode: 200, headers: nil))
@@ -225,6 +236,9 @@ public class ExchangeRatesTests: XCTestCase {
         
         let kucoinData = TestHelpers.kucoinData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "kucoin", data: kucoinData, statusCode: 200, headers: nil))
+        
+        let bittrexData = TestHelpers.bittrexData
+        self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "bittrex", data: bittrexData, statusCode: 200, headers: nil))
         
         let fixerData = TestHelpers.fixerData
         self.mockSession.mockResponses.append(MockSession.Response(urlPattern: "fixer", data: fixerData, statusCode: 200, headers: nil))
