@@ -326,8 +326,8 @@ public struct ExchangeRateParsing {
                 return ([], .unexpectedData)
             }
             
-            let from = Currency.rawValue(codes[0])
-            let to = Currency.rawValue(codes[1])
+            let from = Currency.rawValue(codes[1])
+            let to = Currency.rawValue(codes[0])
             
             let exchangeRate = ExchangeRate(source: .bittrex, from: from, to: to, rate: last)
             exchangeRates.append(exchangeRate)

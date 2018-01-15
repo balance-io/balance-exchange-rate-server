@@ -1,5 +1,7 @@
 Server Setup Notes (work in progress, will fill in some more details later):
 1. Install Nginx (config based on countly)
+   a. mkdir -p /var/cache/nginx/exchangerates
+   b. chown -R www-data /var/cache/nginx
 2. Install certbot and create certificate (no need to create cron entry for renewal, it does it for you)
 3. Install Swift in standard way to /opt/swift
    a. Create dir for Swift release inside /opt/swift
@@ -36,6 +38,8 @@ Server Setup Notes (work in progress, will fill in some more details later):
    d. chgrp exchangerates exchangerates.log
    e. chmod g+w exchangerates.log
    f. service exchangerates start
+   g. systemctl enable exchangerates.service
+      1) This ensures it will run on reboot
 7. Setup the cron jobs
    a. copy server/cron/exchangerates to /etc/cron.d
    b. chown root:root /etc/cron.d/exchangerates
