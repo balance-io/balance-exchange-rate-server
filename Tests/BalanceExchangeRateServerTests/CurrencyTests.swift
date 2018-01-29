@@ -11,18 +11,6 @@ import XCTest
 
 public class CurrencyTests: XCTestCase {
     
-    // required for running tests from `swift test` command
-    public static var allTests : [(String, (CurrencyTests) -> () throws -> Void)] {
-        return [("testBitcoinEquality", testBitcoinEquality),
-                ("testNumberOfDecimalsForDollar", testNumberOfDecimalsForDollar),
-                ("testNumberOfDecimalsForPound", testNumberOfDecimalsForPound),
-                ("testNumberOfDecimalsForBTC", testNumberOfDecimalsForBTC),
-                ("testNumberOfDecimalsForBTC", testNumberOfDecimalsForEther),
-                ("testNumberOfDecimalsForOtherCryptoSC", testNumberOfDecimalsForOtherCryptoSC),
-                ("testNumberOfDecimalsForOtherCryptoXRP", testNumberOfDecimalsForOtherCryptoXRP),
-                ("testTryCoin", testTryCoin)]
-    }
-    
     public func testBitcoinEquality() {
         XCTAssert(Currency.btc == Currency.btc)
         XCTAssert(Currency.rawValue("XBT") == Currency.btc)

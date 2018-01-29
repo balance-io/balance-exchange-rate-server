@@ -78,7 +78,7 @@ public struct BalanceExchangeRateServer {
                 exit(exitCode.rawValue)
             }
             RunLoop.main.run(until: Date.distantFuture)
-        } else if arguments.count > 1 {
+        } else if arguments.count > 1 && !arguments[0].contains("xctest") {
             // Print usage instructions
             printUsage(arguments: arguments)
             exit(ExitCode.commandNotFound.rawValue)

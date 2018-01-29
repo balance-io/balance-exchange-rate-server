@@ -9,15 +9,16 @@ import Foundation
 
 public enum ExchangeRateSource: Int {
     // Crypto
-    case coinbaseGdax = 1
-    case poloniex     = 2
-    case bitfinex     = 3
-    case kraken       = 4
-    case kucoin       = 5
-    case hitbtc       = 6
-    case binance      = 7
+    case coinbaseGdax    = 1
+    case poloniex        = 2
+    case bitfinex        = 3
+    case kraken          = 4
+    case kucoin          = 5
+    case hitbtc          = 6
+    case binance         = 7
     case coinbaseGdaxEur = 8
     case coinbaseGdaxGbp = 9
+    case bittrex         = 10
     
     // Fiat
     case fixer         = 10001
@@ -25,16 +26,10 @@ public enum ExchangeRateSource: Int {
     
     public var source: Int {
         switch self {
-        case .coinbaseGdax, .coinbaseGdaxEur, .coinbaseGdaxGbp: return 1
-        case .poloniex:      return 2
-        case .bitfinex:      return 3
-        case .kraken:        return 4
-        case .kucoin:        return 5
-        case .hitbtc:        return 6
-        case .binance:       return 7
-            
-        case .fixer:         return 10001
-        case .currencylayer: return 10002
+        case .coinbaseGdax, .coinbaseGdaxEur, .coinbaseGdaxGbp:
+            return 1
+        default:
+            return rawValue
         }
     }
     
@@ -61,6 +56,8 @@ public enum ExchangeRateSource: Int {
             return URL(string: "https://api.hitbtc.com/api/2/public/ticker")!
         case .binance:
             return URL(string: "https://api.binance.com/api/v1/ticker/allPrices")!
+        case .bittrex:
+            return URL(string: "https://bittrex.com/api/v1.1/public/getmarketsummaries")!
         
         // Fiat
         case .fixer:
@@ -100,7 +97,7 @@ public enum ExchangeRateSource: Int {
     }
     
     public static var allCrypto: [ExchangeRateSource] {
-        return [coinbaseGdax, coinbaseGdaxEur, coinbaseGdaxGbp, .poloniex, .bitfinex, .kraken, .kucoin, .hitbtc, .binance]
+        return [coinbaseGdax, coinbaseGdaxEur, coinbaseGdaxGbp, .poloniex, .bitfinex, .kraken, .kucoin, .hitbtc, .binance, .bittrex]
     }
     
     public static var allFiat: [ExchangeRateSource] {

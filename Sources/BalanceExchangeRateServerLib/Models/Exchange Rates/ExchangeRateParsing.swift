@@ -20,6 +20,7 @@ public struct ExchangeRateParsing {
                                                                              .kucoin:          kucoin,
                                                                              .hitbtc:          hitbtc,
                                                                              .binance:         binance,
+                                                                             .bittrex:         bittrex,
                                                                               // Fiat
                                                                              .fixer:           fixer,
                                                                              .currencylayer:   currencylayer]
@@ -293,6 +294,55 @@ public struct ExchangeRateParsing {
             let fromCurrency = Currency.rawValue(fromCode)
             let toCurrency = Currency.rawValue(toCode)
             let exchangeRate = ExchangeRate(source: .binance, from: fromCurrency, to: toCurrency, rate: price)
+            exchangeRates.append(exchangeRate)
+        }
+        
+        return (exchangeRates, nil)
+    }
+    
+    // Fixes the special case in Bittrex where they incorrectly use the BCC ticker symbol
+    // for BCH (Bitcoin Cash). BCC is already the symbol of Bitconnect so we can't just make
+    // them equivalent in the Currency enum and everyone else uses BCH, so we need to save
+    // BCC from Bittrex as BCH for it to work correctly.
+    public static func bittrexFixCurrencyCode(_ currencyCode: String) -> String {
+        if currencyCode == "BCC" {
+            return "BCH"
+        }
+        return currencyCode
+    }
+    
+    public static func bittrex(responseData: Data) -> ([ExchangeRate], BalanceError?) {
+        let responseString = String(data: responseData, encoding: .utf8)
+        
+        // Verify the response is correct
+        guard let bodyOptional = try? responseString?.jsonDecode() as? [String: Any], let body = bodyOptional else {
+            return ([], .jsonDecoding)
+        }
+        
+        // Check that the exchange rates are there
+        guard let result = body["result"] as? [[String: Any]] else {
+            return ([], .unexpectedData)
+        }
+        
+        // Parse the exchange rates
+        var exchangeRates = [ExchangeRate]()
+        for rateDict in result {
+            guard let marketName = rateDict["MarketName"] as? String, let last = rateDict["Last"] as? Double else {
+                return ([], .unexpectedData)
+            }
+            
+            // Parse currency (ignoring USDT prices)
+            let codes = marketName.components(separatedBy: "-")
+            guard codes.count == 2 else {
+                return ([], .unexpectedData)
+            }
+            
+            let fromCode = bittrexFixCurrencyCode(codes[1])
+            let toCode = bittrexFixCurrencyCode(codes[0])
+            let from = Currency.rawValue(fromCode)
+            let to = Currency.rawValue(toCode)
+            
+            let exchangeRate = ExchangeRate(source: .bittrex, from: from, to: to, rate: last)
             exchangeRates.append(exchangeRate)
         }
         
