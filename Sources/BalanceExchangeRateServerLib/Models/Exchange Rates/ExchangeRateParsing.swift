@@ -300,6 +300,17 @@ public struct ExchangeRateParsing {
         return (exchangeRates, nil)
     }
     
+    // Fixes the special case in Bittrex where they incorrectly use the BCC ticker symbol
+    // for BCH (Bitcoin Cash). BCC is already the symbol of Bitconnect so we can't just make
+    // them equivalent in the Currency enum and everyone else uses BCH, so we need to save
+    // BCC from Bittrex as BCH for it to work correctly.
+    public static func bittrexFixCurrencyCode(_ currencyCode: String) -> String {
+        if currencyCode == "BCC" {
+            return "BCH"
+        }
+        return currencyCode
+    }
+    
     public static func bittrex(responseData: Data) -> ([ExchangeRate], BalanceError?) {
         let responseString = String(data: responseData, encoding: .utf8)
         
@@ -326,8 +337,10 @@ public struct ExchangeRateParsing {
                 return ([], .unexpectedData)
             }
             
-            let from = Currency.rawValue(codes[1])
-            let to = Currency.rawValue(codes[0])
+            let fromCode = bittrexFixCurrencyCode(codes[1])
+            let toCode = bittrexFixCurrencyCode(codes[0])
+            let from = Currency.rawValue(fromCode)
+            let to = Currency.rawValue(toCode)
             
             let exchangeRate = ExchangeRate(source: .bittrex, from: from, to: to, rate: last)
             exchangeRates.append(exchangeRate)

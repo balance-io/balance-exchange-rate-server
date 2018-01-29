@@ -10,72 +10,6 @@ import XCTest
 
 public class ParserTests: XCTestCase {
     
-//    // required for running tests from `swift test` command
-//    public static var allTests : [(String, (ParserTests) -> () throws -> Void)] {
-//        return [("testParseFunctionNumberOfParsers", testParseFunctionNumberOfParsers),
-//                
-//                ("testPoloniexParsingDoesntGiveError", testPoloniexParsingDoesntGiveError),
-//                ("testPoloniexParsingThrowsErrorOnEmptyData", testPoloniexParsingThrowsErrorOnEmptyData),
-//                ("testPoloniexParsingThrowsErrorOnWrongData", testPoloniexParsingThrowsErrorOnWrongData),
-//                ("testPoloniexParsingNumberOfObjects", testPoloniexParsingNumberOfObjects),
-//                ("testPoloniexParsingObjectProperties", testPoloniexParsingObjectProperties),
-//                
-//                ("testBitfinexxParsingDoesntGiveError", testBitfinexxParsingDoesntGiveError),
-//                ("testBitfinexParsingThrowsErrorOnEmptyData", testBitfinexParsingThrowsErrorOnEmptyData),
-//                ("testBitfinexParsingThrowsErrorOnWrongData", testBitfinexParsingThrowsErrorOnWrongData),
-//                ("testBitfinexParsingNumberOfObjects", testBitfinexParsingNumberOfObjects),
-//                ("testBitfinexParsingObjectProperties", testBitfinexParsingObjectProperties),
-//                
-//                ("testCoinbaseParsingDoesntGiveError", testCoinbaseParsingDoesntGiveError),
-//                ("testCoinbaseParsingThrowsErrorOnEmptyData", testCoinbaseParsingThrowsErrorOnEmptyData),
-//                ("testCoinbaseParsingThrowsErrorOnWrongData", testCoinbaseParsingThrowsErrorOnWrongData),
-//                ("testCoinbaseParsingNumberOfObjects", testCoinbaseParsingNumberOfObjects),
-//                ("testCoinbaseParsingObjectProperties", testCoinbaseParsingObjectProperties),
-//                
-//                ("testKrakenParsingDoesntGiveError", testKrakenParsingDoesntGiveError),
-//                ("testKrakenParsingThrowsErrorOnEmptyData", testKrakenParsingThrowsErrorOnEmptyData),
-//                ("testKrakenParsingThrowsErrorOnWrongData", testKrakenParsingThrowsErrorOnWrongData),
-//                ("testKrakenParsingNumberOfObjects", testKrakenParsingNumberOfObjects),
-//                ("testKrakenParsingObjectProperties", testKrakenParsingObjectProperties),
-//                
-//                ("testKucoinParsingDoesntGiveError", testKucoinParsingDoesntGiveError),
-//                ("testKucoinParsingThrowsErrorOnEmptyData", testKucoinParsingThrowsErrorOnEmptyData),
-//                ("testKucoinParsingThrowsErrorOnWrongData", testKucoinParsingThrowsErrorOnWrongData),
-//                ("testKucoinParsingNumberOfObjects", testKucoinParsingNumberOfObjects),
-//                ("testKucoinParsingObjectProperties", testKucoinParsingObjectProperties),
-//                
-//                ("testHitbtcParsingDoesntGiveError", testHitbtcParsingDoesntGiveError),
-//                ("testHitbtcParsingThrowsErrorOnEmptyData", testHitbtcParsingThrowsErrorOnEmptyData),
-//                ("testHitbtcParsingThrowsErrorOnWrongData", testHitbtcParsingThrowsErrorOnWrongData),
-//                ("testHitbtcParsingNumberOfObjects", testHitbtcParsingNumberOfObjects),
-//                ("testHitbtcParsingObjectProperties", testHitbtcParsingObjectProperties),
-//                
-//                ("testBinanceParsingDoesntGiveError", testBinanceParsingDoesntGiveError),
-//                ("testBinanceParsingThrowsErrorOnEmptyData", testBinanceParsingThrowsErrorOnEmptyData),
-//                ("testBinanceParsingThrowsErrorOnWrongData", testBinanceParsingThrowsErrorOnWrongData),
-//                ("testBinanceParsingNumberOfObjects", testBinanceParsingNumberOfObjects),
-//                ("testBinanceParsingObjectProperties", testBinanceParsingObjectProperties),
-//                
-//                ("testBittrexParsingDoesntGiveError", testBittrexParsingDoesntGiveError),
-//                ("testBittrexParsingThrowsErrorOnEmptyData", testBittrexParsingThrowsErrorOnEmptyData),
-//                ("testBittrexParsingThrowsErrorOnWrongData", testBittrexParsingThrowsErrorOnWrongData),
-//                ("testBittrexParsingNumberOfObjects", testBittrexParsingNumberOfObjects),
-//                ("testBittrexParsingObjectProperties", testBittrexParsingObjectProperties),
-//                
-//                ("testFixerParsingDoesntGiveError", testFixerParsingDoesntGiveError),
-//                ("testFixerParsingThrowsErrorOnEmptyData", testFixerParsingThrowsErrorOnEmptyData),
-//                ("testFixerParsingThrowsErrorOnWrongData", testFixerParsingThrowsErrorOnWrongData),
-//                ("testFixerParsingNumberOfObjects", testFixerParsingNumberOfObjects),
-//                ("testFixerParsingObjectProperties", testFixerParsingObjectProperties),
-//                
-//                ("testCurrencylayerParsingDoesntGiveError", testCurrencylayerParsingDoesntGiveError),
-//                ("testCurrencylayerParsingThrowsErrorOnEmptyData", testCurrencylayerParsingThrowsErrorOnEmptyData),
-//                ("testCurrencylayerParsingThrowsErrorOnWrongData", testCurrencylayerParsingThrowsErrorOnWrongData),
-//                ("testCurrencylayerParsingNumberOfObjects", testCurrencylayerParsingNumberOfObjects),
-//                ("testCurrencylayerParsingObjectProperties", testCurrencylayerParsingObjectProperties)
-//        ]
-//    }
-    
     public func testParseFunctionNumberOfParsers() {
         //then
         XCTAssertEqual(ExchangeRateParsing.parseFunctions.count, ExchangeRateSource.all.count)
@@ -559,6 +493,21 @@ public class ParserTests: XCTestCase {
         XCTAssertEqual(exchangeRate.from, Currency.crypto(enum: .ltc))
         XCTAssertEqual(exchangeRate.to, Currency.crypto(enum: .btc))
         XCTAssertEqual(exchangeRate.rate, 0.017039)
+    }
+    
+    public func testBittrexParsingBitcoinCashProperties() {
+        //given
+        let bittrexData = TestHelpers.bittrexBitcoinCashData
+        
+        //when
+        let (exchangeRates, _) = ExchangeRateParsing.bittrex(responseData: bittrexData)
+        let exchangeRate = exchangeRates.first!
+        
+        //then
+        XCTAssertEqual(exchangeRate.source, ExchangeRateSource.bittrex)
+        XCTAssertEqual(exchangeRate.from, Currency.crypto(enum: .bch))
+        XCTAssertEqual(exchangeRate.to, Currency.crypto(enum: .btc))
+        XCTAssertEqual(exchangeRate.rate, 0.18944998)
     }
 
     public func testFixerParsingDoesntGiveError() {

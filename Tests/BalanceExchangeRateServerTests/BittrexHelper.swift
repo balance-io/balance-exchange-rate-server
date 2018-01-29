@@ -19,6 +19,11 @@ extension TestHelpers {
         return jsonData
     }
     
+    public static var bittrexBitcoinCashData: Data {
+        let jsonData = TestHelpers.bittrexBitcoinCashResponse.data(using: .utf8)!
+        return jsonData
+    }
+    
     public static var bittrexSimpleResponse = """
     {
       "success": true,
@@ -38,6 +43,30 @@ extension TestHelpers {
           "OpenSellOrders": 8968,
           "PrevDay": 0.01710000,
           "Created": "2014-02-13T00:00:00"
+        }
+      ]
+    }
+    """
+    
+    public static var bittrexBitcoinCashResponse = """
+    {
+      "success": true,
+      "message": "",
+      "result": [
+        {
+          "MarketName": "BTC-BCC",
+          "High": 0.18999999,
+          "Low": 0.18090000,
+          "Volume": 18274.80659849,
+          "Last": 0.18944998,
+          "BaseVolume": 3378.97321979,
+          "TimeStamp": "2018-01-12T22:12:24.473",
+          "Bid": 0.18902001,
+          "Ask": 0.18944998,
+          "OpenBuyOrders": 3500,
+          "OpenSellOrders": 16069,
+          "PrevDay": 0.18549943,
+          "Created": "2017-08-01T18:34:04.967"
         }
       ]
     }
