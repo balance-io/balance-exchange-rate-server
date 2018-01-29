@@ -31,7 +31,7 @@ public struct ExchangeRateTable {
     // Ensures that the current and next table exists
     public static func rotate() {
         guard create(name: current) && create(name: next) else {
-            Log.error(message: "Failed to rotate tables")
+            BalanceLog.error(message: "Failed to rotate tables")
             return
         }
     }
@@ -48,7 +48,7 @@ public struct ExchangeRateTable {
         let query = "CREATE TABLE IF NOT EXISTS \(name) (timestamp DATETIME, sourceId SMALLINT UNSIGNED, fromCode CHAR(10), toCode CHAR(10), rate DOUBLE, INDEX(timestamp), INDEX(sourceId, timestamp))"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
-            Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
+            BalanceLog.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
             return false
         }
         
