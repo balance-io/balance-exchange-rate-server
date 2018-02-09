@@ -39,7 +39,7 @@ public func sendErrorJsonResponse(error: BalanceError, response: HTTPResponse) {
 public func connectToMysql(db: String? = "balance") -> MySQL? {
     let mysql = MySQL()
     guard mysql.connect(host: Config.MySQL.host, user: Config.MySQL.user, password: Config.MySQL.pass, db: db, socket: Config.MySQL.socket) else {
-        Log.error(message: "Failure connecting to mysql server host \(String(describing: Config.MySQL.host)) socket: \(String(describing: Config.MySQL.socket)) error: \(mysql.errorCode()) \(mysql.errorMessage())")
+        BalanceLog.error(message: "Failure connecting to mysql server host \(String(describing: Config.MySQL.host)) socket: \(String(describing: Config.MySQL.socket)) error: \(mysql.errorCode()) \(mysql.errorMessage())")
         return nil
     }
     return mysql

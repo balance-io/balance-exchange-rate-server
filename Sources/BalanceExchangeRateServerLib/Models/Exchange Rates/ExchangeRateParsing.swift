@@ -131,7 +131,7 @@ public struct ExchangeRateParsing {
         
         // Check for errors
         if let errors = body["error"] as? [Any], errors.count > 0 {
-            Log.error(message: "Found error(s) in the response: \(errors)")
+            BalanceLog.error(message: "Found error(s) in the response: \(errors)")
             return ([], .unexpectedData)
         }
         
@@ -173,7 +173,7 @@ public struct ExchangeRateParsing {
                     }
                     toCurrency = Currency.rawValue(toCode)
                 } else {
-                    Log.error(message: "Currency pair \(key) failed to decode")
+                    BalanceLog.error(message: "Currency pair \(key) failed to decode")
                     return ([], .unexpectedData)
                 }
             }
@@ -195,7 +195,7 @@ public struct ExchangeRateParsing {
         
         // Check for success
         guard let success = body["success"] as? Bool, success == true else {
-            Log.error(message: "Success was false")
+            BalanceLog.error(message: "Success was false")
             return ([], .unexpectedData)
         }
         
@@ -225,7 +225,7 @@ public struct ExchangeRateParsing {
         
         // Check for success
         guard body.count > 0 else {
-            Log.error(message: "Did not return any prices")
+            BalanceLog.error(message: "Did not return any prices")
             return ([], .unexpectedData)
         }
         
@@ -268,7 +268,7 @@ public struct ExchangeRateParsing {
         
         // Check for success
         guard body.count > 0 else {
-            Log.error(message: "Did not return any prices")
+            BalanceLog.error(message: "Did not return any prices")
             return ([], .unexpectedData)
         }
         

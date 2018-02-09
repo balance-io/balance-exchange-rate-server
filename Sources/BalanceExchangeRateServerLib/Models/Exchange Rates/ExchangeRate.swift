@@ -74,7 +74,7 @@ public struct ExchangeRates {
         let query = "SELECT * FROM \(ExchangeRateTable.current) WHERE timestamp = \"\(timestamp.mysqlFormatted)\" AND sourceId = \(source.source)"
         let statement = MySQLStmt(mysql)
         guard statement.prepare(statement: query), statement.execute() else {
-            Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
+            BalanceLog.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
             throw BalanceError.databaseError
         }
         
@@ -198,7 +198,7 @@ public struct ExchangeRates {
             group.enter()
             ExchangeRates.updateRatesForExchange(source: source, startTime: startTime, session: session) { balError in
                 if let balError = balError {
-                    Log.error(message: "Error updating exchange rates for \(source): \(balError)")
+                    BalanceLog.error(message: "Error updating exchange rates for \(source): \(balError)")
                 }
                 group.leave()
             }
@@ -214,7 +214,7 @@ public struct ExchangeRates {
         
         let task = session.dataTask(with: source.request) { data, response, error in
             guard error == nil, let data = data else {
-                Log.error(message: "updateExchangeRates for \(source): network error received or data is nil error: \(String(describing: error))")
+                BalanceLog.error(message: "updateExchangeRates for \(source): network error received or data is nil error: \(String(describing: error))")
                 completion(.networkError)
                 return
             }
@@ -251,7 +251,7 @@ public struct ExchangeRates {
         
         for query in queries {
             guard mysql.query(statement: query) else {
-                Log.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
+                BalanceLog.error(message: "Failure to run statement: \(mysql.errorCode()) \(mysql.errorMessage())")
                 return .databaseError
             }
         }
